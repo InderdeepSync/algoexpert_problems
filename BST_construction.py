@@ -11,14 +11,16 @@ class BST:
     def insert(self, value):
         if value < self.value:
             if self.left is not None:
-                self.left.insert(value)
+                return self.left.insert(value)
             else:
                 self.left = BST(value, self)
+                return self.left
         else:
             if self.right is not None:
-                self.right.insert(value)
+                return self.right.insert(value)
             else:
                 self.right = BST(value, self)
+                return self.right
 
     def contains(self, value):
         if value == self.value:
@@ -143,6 +145,19 @@ class BST:
         print(tree.value)
         cls.depth_first_search(tree.left)
         cls.depth_first_search(tree.right)
+
+    @classmethod
+    def breadth_first_search(cls, tree):
+        nodes = [tree]
+
+        while nodes:
+            node = nodes.pop(0)
+            print(node)
+            if node.left:
+                nodes.append(node.left)
+            if node.right:
+                nodes.append(node.right)
+
 
     @classmethod
     def validate_bst(cls, tree, min_value=-math.inf, max_value=math.inf):
@@ -344,8 +359,26 @@ def find_successor(tree, node):
 
     return -1
 
+def parent_chain(node):
+    while node:
+        yield node
+        node = node.parent
 
 
+def youngest_common_ancestor(node1, node2):
+    chain1 = list(parent_chain(node1))
+    chain1.reverse()
+
+    chain2 = list(parent_chain(node2))
+    chain2.reverse()
+
+    common_ancestor = None
+    while chain1[0] is chain2[0]:
+        common_ancestor = chain1[0]
+        chain1 = chain1[1:]
+        chain2 = chain2[1:]
+
+    return common_ancestor
 
 
 
@@ -411,7 +444,9 @@ def create_bst_tree2():
 
 def main():
     tree = create_bst_tree1()
-    # tree.remove(121)
+    node_ref_1 = tree.insert(45)
+    node_ref_2 = tree.insert(15.5)
+
     tree.closest_value_to(6)
 
 
@@ -435,9 +470,7 @@ def main():
     # leaf_nodes = tree.get_leaf_nodes()
     tree2 = create_bst_tree2()
     print("In-Order Traversal: {}".format(tree.in_order_traversal()))
-    for item in tree.get_all_nodes():
-        print("Node: {} => Height {}".format(item, item.is_balanced()))
-    print("Donne: ", find_successor(tree, tree.right.right.right))
+    print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
 
 
 
