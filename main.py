@@ -213,6 +213,166 @@ def number_of_ways_to_make_change2(target, arr):
     return no_of_ways
 
 
+def single_cycle_check(arr):
+    assert len(arr)
+
+    seen = []
+    current_index = 0
+
+    while current_index not in seen:
+        seen.append(current_index)
+
+        current_index = (current_index + arr[current_index]) % len(arr)
+
+    return len(seen) == len(arr) and current_index == seen[0]
+
+
+def permutations(arr):
+    temp = [[arr[0]]]
+    for index in range(1, len(arr)):
+        temp2 = []
+        for combo in temp:
+            for i in range(len(combo) + 1):
+                combo_copy = list(combo)
+                combo_copy.insert(i, arr[index])
+                temp2.append(combo_copy)
+
+        temp = temp2
+    return len(temp), temp
+
+
+def powerset(arr):
+    temp = [[], [arr[0]]]
+
+    for index in range(1, len(arr)):
+        temp2 = []
+        for item in temp:
+            temp2.append(item + [arr[index]])
+
+        temp.extend(temp2)
+
+    return len(temp), temp
+
+
+def staircase_traversal(height, max_steps): # Gives Time Limit Exceeded on LeetCode
+    ways = [[num] for num in range(1, min(max_steps, height) + 1)]
+    while list(filter(lambda w: sum(w) < height, ways)):
+        new_ways = [way for way in ways if sum(way) == height]
+        for way in ways:
+            for step in range(1, max_steps + 1):
+                if sum(way) + step > height:
+                    break
+                new_ways.append(way + [step])
+
+        ways = new_ways
+
+    return len(ways), ways
+
+
+def staircase_traversal_elegant(height, max_steps, cache): # Verified on LeetCode
+    if height in (1, 0):
+        return 1
+    elif height in cache:
+        return cache[height]
+
+    result = 0
+    for step in filter(lambda s: height - s >= 0, range(1, max_steps + 1)):
+        result += staircase_traversal_elegant(height - step, max_steps, cache)
+
+    cache[height] = result
+    return result
+
+
+def balanced_brackets(string):
+    closing = {")": "(", "]": "[", "}": "{"}
+
+    temp = []
+    for ch in string:
+        if ch not in closing:
+            temp.append(ch)
+            continue
+
+        if temp[-1] == closing[ch]:
+            temp.pop()
+        else:
+            return False
+
+    return len(temp) == 0
+
+
+def sunset_views(building_heights, direction="EAST"):
+    buildings_indices = range(len(building_heights))
+    if direction == "EAST":
+        buildings_indices = reversed(buildings_indices)
+
+    result = []
+    max_height_till_now = -math.inf
+
+    for index in buildings_indices:
+        height = building_heights[index]
+        if height > max_height_till_now:
+            result.append(index)
+            max_height_till_now = height
+
+    return result
+
+
+def longest_palindromic_substring(string): # Verified in LeetCode
+    def calc_longest_palindromic_substring(beg, end):
+        temp_substring = ""
+        while beg >= 0 and end < len(string) and string[beg] == string[end]:
+            temp_substring = string[beg: end + 1]
+            beg -= 1
+            end += 1
+
+        return temp_substring
+
+    if len(string) <= 1:
+        return string
+
+    longest_substring = string[0] if string[0] != string[1] else string[0: 2]
+
+    for index in range(2, len(string)):
+        if string[index] not in (string[index - 1], string[index - 2]):
+            continue
+
+        temp1 = calc_longest_palindromic_substring(index - 1, index)
+        temp2 = calc_longest_palindromic_substring(index - 2, index)
+
+        longest_substring = max(temp1, temp2, longest_substring, key=lambda x: len(x))
+
+    return longest_substring
+
+
+def valid_ip_addresses(string, no_of_dots=3): # Verified in LeetCode
+    def is_invalid_ip_component(ip_substring_component):
+        return ip_substring_component.startswith("0") and len(ip_substring_component) >= 2
+
+    if no_of_dots == 0:
+        if 0 <= int(string) <= 255 and not is_invalid_ip_component(string):
+            return [string]
+        else:
+            return []
+
+    valid_addresses = []
+    for index in range(1, len(string)):
+        if int(string[:index]) > 255:
+            break
+
+        if is_invalid_ip_component(string[:index]):
+            continue
+
+        sub_addresses = valid_ip_addresses(string[index:], no_of_dots - 1)
+        valid_addresses.extend([string[:index] + "." + sub_address for sub_address in sub_addresses])
+
+    return valid_addresses
+
+
+
+
+
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print(evaluate([5, 2, [7, -1], 3, [6, [-13, 8], 4]]))
@@ -235,4 +395,17 @@ if __name__ == '__main__':
     print("Max Subset Sum No Adjacent: {}".format(max_subset_sum_no_adjacent([7, 10, 12, 7, 9, 14])))
 
     print("Number of Ways to make change: {}".format(number_of_ways_to_make_change(10, [1, 5, 10, 25])))
+
+    print("Single Cycle Check: {}".format(single_cycle_check([2, 3, 1, -4, -4, 2])))
+    print("Single Cycle Check: {}".format(single_cycle_check([1, -1, 1, -1])))
+    print("Powerset: {}".format(powerset([1, 2, 3, 4])))
+    print("Staircase Traversal: {}".format(staircase_traversal(1, 2)))
+    print("Staircase Traversal Elegant: {}".format(staircase_traversal_elegant(1, 2, dict())))
+
+    print("Balanced Brackets: {}".format(balanced_brackets("(([]()()){})")))
+    print("Sunset Views: {}".format(sunset_views([3, 5, 4, 4, 3, 1, 3, 2], "EAST")))
+
+    print("Longest Palindromic Substring: {}".format(longest_palindromic_substring("abababcc")))
+    print("Possible Valid IP Addresses: {}".format(valid_ip_addresses("0000", 3)))
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
