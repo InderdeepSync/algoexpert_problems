@@ -12,7 +12,7 @@ def spiral_traverse(matrix):
 
     return res
 
-
+# Verified on LeetCode TODO Implement better approach
 def perimeter_func(matrix):
     transpose_matrix = list(zip(*matrix))
 
@@ -20,6 +20,7 @@ def perimeter_func(matrix):
     right_boundary = list(transpose_matrix[-1][1:-1])
     lower_boundary = list(reversed(matrix[-1])) if upper_boundary is not matrix[-1] else []
     left_boundary = list(reversed([*transpose_matrix[0][1:-1]]))
+    left_boundary = [] if len(matrix[0]) == 1 else left_boundary
 
     return upper_boundary + right_boundary + lower_boundary + left_boundary
 

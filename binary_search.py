@@ -14,7 +14,30 @@ def binary_search(arr, value, start, end):
         return binary_search(arr, value, mid + 1, end)
 
 
+def search_in_sorted_matrix(input_matrix, target, start, end):
+    if start[0] > end[0] or start[1] > end[1]:
+        return None
+
+    mid = (math.floor((start[0] + end[0])/2), math.floor((start[1] + end[1])/2))
+
+    current = input_matrix[mid[0]][mid[1]]
+    if current == target:
+        return mid
+    elif current > target:
+        return search_in_sorted_matrix(input_matrix, target, start, (mid[0], mid[1]))
+    else:
+        return search_in_sorted_matrix(input_matrix, target, (mid[0], mid[1]), end)
+
+
+
 if __name__ == '__main__':
     array = [12, 45, 65, 78, 83, 87, 91, 95, 99, 101]
     result = binary_search(array, 86, 0, len(array) - 1)
-    print(result)
+
+    matrix = [[1, 4, 7, 12, 15, 1000],
+              [2, 5, 19, 31, 32, 1001],
+              [3, 8, 24, 33, 35, 1002],
+              [40, 41, 42, 44, 45, 1003],
+              [99, 100, 103, 106, 108, 1004]]
+    found_coordinates = search_in_sorted_matrix(matrix, 44, start=(0, 0), end=(len(matrix) - 1, len(matrix[0]) - 1))
+    print(found_coordinates)

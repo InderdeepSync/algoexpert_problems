@@ -1,17 +1,13 @@
 
-def main(arr, subsequence):
-	if len(subsequence) == 0:
-		return True
-
-	subiter = iter(subsequence)
-	subelem = next(subiter)
-
+def main(arr, subsequence): # Verified on Leetcode
 	try:
+		sub_iter = iter(subsequence)
+		sub_elem = next(sub_iter)
+
 		for item in arr:
-			if item == subelem:
-				subelem = next(subiter)
+			if item == sub_elem:
+				sub_elem = next(sub_iter)
 	except StopIteration:
-		# import pdb; pdb.set_trace()
 		return True
 	else:
 		return False
