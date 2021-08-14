@@ -8,6 +8,21 @@ class SuffixTree:
     def __repr__(self):
         return "SuffixTree(char={})".format(self.char)
 
+    def contains(self, string):
+        temp_index = 0
+        sub_tree = self
+
+        while temp_index < len(string):
+            new_sub_tree = sub_tree.get_child_with_char(string[temp_index])
+            if not new_sub_tree:
+                return False
+
+            temp_index += 1
+            sub_tree = new_sub_tree
+
+        return SuffixTree._has_char_in_children(sub_tree, "*")
+
+
     @classmethod
     def create_suffix_tree_from(cls, string):
         tree = cls(char="/", children=[])
@@ -19,20 +34,18 @@ class SuffixTree:
         return tree
 
     def add_suffix_to_tree(self, suffix):
-        sub_tree = self.get_child_with_char(suffix[0])
+        temp_index = 0
+        sub_tree = self
+        while temp_index < len(suffix):
+            new_sub_tree = sub_tree.get_child_with_char(suffix[temp_index])
+            if not new_sub_tree:
+                break
 
-        if not sub_tree:
-            self.children.append(SuffixTree._convert_string_to_tree(suffix))
-        else:
-            tree2 = self
-            for index_char, char in enumerate(suffix):
-                sub_tree = tree2.get_child_with_char(char)
+            sub_tree = new_sub_tree
+            temp_index += 1
 
-                if sub_tree is None:
-                    tree2.children.append(SuffixTree._convert_string_to_tree(suffix[index_char:]))
-                    break
-                else:
-                    tree2 = sub_tree
+        sub_tree.children.append(SuffixTree._convert_string_to_tree(suffix[temp_index:]))
+
 
     @staticmethod
     def _has_char_in_children(tree_node, char):
@@ -57,4 +70,5 @@ class SuffixTree:
 if __name__ == "__main__":
     suffix_tree = SuffixTree.create_suffix_tree_from("babacad")
     suffix_tree.add_suffix_to_tree("baby")
-    print(suffix_tree)
+    suffix_tree.add_suffix_to_tree("babacad")
+    print(suffix_tree.contains("babacad"))
