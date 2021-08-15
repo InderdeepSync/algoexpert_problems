@@ -1,4 +1,5 @@
 import math
+from typing import List
 
 
 class BST:
@@ -294,6 +295,21 @@ class BST:
         return is_left_tree_balanced and is_right_tree_balanced and \
             abs(BST._height_or_default(self.left) - BST._height_or_default(self.right)) <= 1
 
+    def max_path_sum(self):  # Verified on Leetcode
+        max_left_sum_branch_including_root, max_left_sum_overall = self.left.max_path_sum() if self.left else (0, 0)
+        max_right_sum_branch_including_root, max_right_sum_overall = self.right.max_path_sum() if self.right else (0, 0)
+
+        max_branch_sum_including_root = max(self.value + max_right_sum_branch_including_root,
+                                            self.value + max_left_sum_branch_including_root, self.value)
+        max_sum_including_root = max(
+            max_right_sum_branch_including_root + max_left_sum_branch_including_root + self.value,
+            max_branch_sum_including_root)
+        max_sum_overall = max(
+            [max_sum_including_root] + list(filter(lambda x: x != 0, (max_left_sum_overall, max_right_sum_overall))))
+
+        return max_branch_sum_including_root, max_sum_overall
+
+
     @property
     def diameter(self):
         def get_longest_path_across_tree(node):
@@ -381,6 +397,32 @@ def youngest_common_ancestor(node1, node2):
     return common_ancestor
 
 
+def is_same_bst(bst1: List, bst2: List):
+    def _get_left_and_right_subtrees(tree):
+        left_tree = []
+        right_tree = []
+
+        for index in range(1, len(tree)):
+            if tree[index] <= tree[0]:
+                left_tree.append(tree[index])
+            else:
+                right_tree.append(tree[index])
+
+        return left_tree, right_tree
+
+    if len(bst1) != len(bst2):
+        return False
+    if len(bst1) == 0:
+        return True
+
+    left_subtree_original, right_subtree_original = _get_left_and_right_subtrees(bst1)
+    left_subtree, right_subtree = _get_left_and_right_subtrees(bst2)
+
+    return bst1[0] == bst2[0] and is_same_bst(left_subtree_original, left_subtree) and is_same_bst(
+        right_subtree_original, right_subtree)
+
+
+
 
 
 def create_bst_tree1():
@@ -444,8 +486,7 @@ def create_bst_tree2():
 
 def main():
     tree = create_bst_tree1()
-    node_ref_1 = tree.insert(45)
-    node_ref_2 = tree.insert(15.5)
+
 
     tree.closest_value_to(6)
 
@@ -470,7 +511,13 @@ def main():
     # leaf_nodes = tree.get_leaf_nodes()
     tree2 = create_bst_tree2()
     print("In-Order Traversal: {}".format(tree.in_order_traversal()))
-    print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
+
+    # node_ref_1 = tree.insert(45)
+    # node_ref_2 = tree.insert(15.5)
+    # print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
+    print("Is Same BST: {}".format(is_same_bst([10, 15, 8, 12, 94, 81, 5, 2, 11], [10, 8, 5, 15, 2, 12, 11, 94, 81])))
+
+    print("Max Path Sum: {}".format(BST(-3, None).max_path_sum()))
 
 
 
