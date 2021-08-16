@@ -421,9 +421,55 @@ def is_same_bst(bst1: List, bst2: List):
     return bst1[0] == bst2[0] and is_same_bst(left_subtree_original, left_subtree) and is_same_bst(
         right_subtree_original, right_subtree)
 
+def find_nodes_k_distance(tree_node, k, visited):
+    result = []
+
+    if not tree_node or tree_node in visited:
+        return result
+
+    if k == 0:
+        return [tree_node.value]
+
+    visited.add(tree_node)
+
+    result.extend(find_nodes_k_distance(tree_node.parent, k - 1, visited))
+    result.extend(find_nodes_k_distance(tree_node.left, k - 1, visited))
+    result.extend(find_nodes_k_distance(tree_node.right, k - 1, visited))
+
+    return result
 
 
+def main():
+    tree = create_bst_tree1()
+    tree.closest_value_to(6)
+    invalid_bst = BST(6, None, BST(3, None), BST)
 
+    res = list(tree.branch_sums())
+
+    result = tree.get_node_depths()
+    # print(tree.pre_order_traversal())
+    # print(tree.post_order_traversal())
+    # BST.depth_first_search(tree)
+    sorted_arr = [1, 2, 5, 7, 10, 13, 14, 15, 22]
+    # min_height_tree = BST.minimum_height_bst(sorted_arr, 0, len(sorted_arr) - 1)
+    # print("Kth Largest Value : {}".format(tree.reverse_in_order_traversal()))
+
+    # pre_order_bst_as_array = [10, 4, 2, 1, 5, 5, 17, 19, 18]
+    # new_tree = reconstruct_bst_from_preorder_traversal(pre_order_bst_as_array)
+
+    # leaf_nodes = tree.get_leaf_nodes()
+    tree2 = create_bst_tree2()
+    print("In-Order Traversal: {}".format(tree.in_order_traversal()))
+
+    # node_ref_1 = tree.insert(45)
+    # node_ref_2 = tree.insert(15.5)
+    # print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
+    print("Is Same BST: {}".format(is_same_bst([10, 15, 8, 12, 94, 81, 5, 2, 11], [10, 8, 5, 15, 2, 12, 11, 94, 81])))
+
+    print("Max Path Sum: {}".format(BST(-3, None).max_path_sum()))
+
+    node_ref_3 = tree.insert(13.5)
+    print("Find Nodes K-distance: {}".format(find_nodes_k_distance(node_ref_3, 4, visited=set())))
 
 def create_bst_tree1():
     """
@@ -455,7 +501,6 @@ def create_bst_tree1():
     tree.insert(7)
     tree.insert(12)
     tree.insert(8)
-
     return tree
 
 def create_bst_tree2():
@@ -481,45 +526,6 @@ def create_bst_tree2():
     tree.insert(14)
 
     return tree
-
-
-
-def main():
-    tree = create_bst_tree1()
-
-
-    tree.closest_value_to(6)
-
-
-
-    invalid_bst = BST(6, None, BST(3, None), BST)
-
-    res = list(tree.branch_sums())
-
-    result = tree.get_node_depths()
-    # print(tree.pre_order_traversal())
-    # print()
-    # print(tree.post_order_traversal())
-    # BST.depth_first_sMin Height BSTearch(tree)
-    sorted_arr = [1, 2, 5, 7, 10, 13, 14, 15, 22]
-    # min_height_tree = BST.minimum_height_bst(sorted_arr, 0, len(sorted_arr) - 1)
-    # print("Kth Largest Value : {}".format(tree.reverse_in_order_traversal()))
-
-    # pre_order_bst_as_array = [10, 4, 2, 1, 5, 5, 17, 19, 18]
-    # new_tree = reconstruct_bst_from_preorder_traversal(pre_order_bst_as_array)
-
-    # leaf_nodes = tree.get_leaf_nodes()
-    tree2 = create_bst_tree2()
-    print("In-Order Traversal: {}".format(tree.in_order_traversal()))
-
-    # node_ref_1 = tree.insert(45)
-    # node_ref_2 = tree.insert(15.5)
-    # print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
-    print("Is Same BST: {}".format(is_same_bst([10, 15, 8, 12, 94, 81, 5, 2, 11], [10, 8, 5, 15, 2, 12, 11, 94, 81])))
-
-    print("Max Path Sum: {}".format(BST(-3, None).max_path_sum()))
-
-
 
 
 if __name__ == '__main__':
