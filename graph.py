@@ -8,6 +8,12 @@ class Graph:
     def add_child(self, name):
         self.children.append(Graph(name))
 
+    def __repr__(self):
+        return "Graph(name={})".format(self.name)
+
+    def add_subgraph(self, sub_graph):
+        self.children.append(sub_graph)
+
 
 def number_of_ways_to_traverse_graph(height, width):
     if height == 1 or width == 1:
@@ -146,6 +152,23 @@ def topological_sort(graph):
     stack.reverse()
     return stack
 
+def get_lowest_common_manager(graph, target_set):
+    return lowest_common_manager(graph, target_set)["lowest_common_manager"]
+
+def lowest_common_manager(graph, target_set):
+    nodes_found = set()
+    for child_graph in graph.children:
+        lcm = lowest_common_manager(child_graph, target_set)
+        if lcm["lowest_common_manager"] is not None:
+            return lcm
+
+        nodes_found = nodes_found.union(lcm["nodes_found"])
+
+    if graph.name in target_set:
+        nodes_found.add(graph.name)
+
+    lowest_manager = graph.name if len(target_set.difference(nodes_found)) == 0 else None
+    return {"lowest_common_manager": lowest_manager, "nodes_found": nodes_found}
 
 
 if __name__ == "__main__":
@@ -161,3 +184,18 @@ if __name__ == "__main__":
     print("Dijkstra's Algorithm: {}".format(dijkstra_algorithm(weighted_graph, 0)))
     print("Topological Sort(Kahn): {}".format(topological_sort_kahn(graph1)))
     print("Topological Sort: {}".format(topological_sort(graph3)))
+    input_graph = Graph("A")
+    input_graph.add_child("B")
+    input_graph.add_child("C")
+    input_graph.add_child("D")
+    subgraph = Graph("I")
+    subgraph.add_child("J")
+    subgraph.add_child("K")
+    subgraph.add_child("L")
+    input_graph.add_subgraph(subgraph)
+    subgraph2 = Graph("O")
+    subgraph2.add_child("P")
+    subgraph2.add_child("Q")
+    input_graph.add_subgraph(subgraph2)
+
+    print("Lowest Common Manager: {}".format(lowest_common_manager(input_graph, {"P", "Q"})))
