@@ -16,6 +16,9 @@ class MinHeap:
     def __str__(self):
         return str(self.arr)
 
+    def peek(self):
+        return self.arr[0]
+
     def _heapify(self, node_index):
         children_nodes = self._get_children(node_index)
         temp_node = min(children_nodes, default=None, key=lambda n: n["value"])
