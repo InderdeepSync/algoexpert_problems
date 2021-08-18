@@ -416,6 +416,197 @@ def zigzag_traversal(matrix):
 
     return result
 
+def max_sum_increasing_subsequence(arr):
+    max_sums_including_current = arr.copy()
+    sequences = [None] * len(arr)
+    for index1 in range(1, len(arr)):
+        for index2 in range(0, index1):
+            if arr[index2] >= arr[index1]:
+                continue
+
+            prospective_sum = max_sums_including_current[index2] + arr[index1]
+            if max_sums_including_current[index1] < prospective_sum:
+                max_sums_including_current[index1] = prospective_sum
+                sequences[index1] = index2
+
+    temp_index = max_sums_including_current.index(max(max_sums_including_current))
+    result = []
+    while temp_index is not None:
+        result.append(arr[temp_index])
+        temp_index = sequences[temp_index]
+
+    return result
+
+def lcs(input1, input2):
+    cache = dict()
+
+    def _calculate_lcs_and_save_in_cache(str1, str2):
+        str_pair = (str1, str2)
+        if str_pair not in cache:
+            cache[str_pair] = longest_common_subsequence(str1, str2)
+        return cache[str_pair]
+
+    def longest_common_subsequence(string1, string2):
+        if len(string1) == 0 or len(string2) == 0:
+            return ""
+
+        if string1[0] == string2[0]:
+            return string1[0] + _calculate_lcs_and_save_in_cache(string1[1:], string2[1:])
+
+        return max(_calculate_lcs_and_save_in_cache(string1[1:], string2),
+                   _calculate_lcs_and_save_in_cache(string2[1:], string1),
+                   key=len)
+
+    return longest_common_subsequence(input1, input2)
+
+def min_number_of_jumps(arr):
+    if len(arr) == 1:
+        return 0
+
+    min_jumps = math.inf
+    for jump_size in range(1, arr[0] + 1):
+        if jump_size >= len(arr):
+            break
+        min_jumps = min(min_jumps, min_number_of_jumps(arr[jump_size:]))
+
+    return min_jumps + 1
+
+
+def min_number_of_jumps_with_caching(arr, start, cache):
+    if len(arr) - 1 == start:
+        return 0
+    min_jumps = float("inf")
+
+    for jump_size in range(1, arr[start] + 1):
+        effective_start = start + jump_size
+        if effective_start >= len(arr):
+            break
+        if effective_start not in cache:
+            cache[effective_start] = min_number_of_jumps_with_caching(arr, effective_start, cache)
+
+        min_jumps = min(min_jumps, cache[effective_start])
+
+    return min_jumps + 1
+
+
+def water_area(arr):
+    max_right = [0]
+
+    for index3 in reversed(range(0, len(arr) - 1)):
+        max_right.insert(0, max(max_right[0], arr[index3 + 1]))
+
+    max_left = [0]
+    for index2 in range(1, len(arr)):
+        max_left.append(max(max_left[-1], arr[index2 - 1]))
+
+    area = 0
+    for index, item in enumerate(arr):
+        water_possible = max(0, min(max_left[index], max_right[index]) - item)
+        area += water_possible
+
+    return area
+
+def knapsack(items, max_bag_capacity):
+    if max_bag_capacity == 0 or len(items) == 0:
+        return 0
+
+    temp = float("-inf") if items[-1][1] > max_bag_capacity else items[-1][0] + knapsack(items[: -1], max_bag_capacity - items[-1][1])
+    return max(knapsack(items[: -1], max_bag_capacity), temp)
+
+def knapsack_with_dynamic_programming(items, max_bag_capacity):
+    def _get_items_producing_value_at(row_index, col_index):
+        result = []
+
+        while row_index and col_index:
+            if values[row_index][col_index] == values[row_index - 1][col_index]:
+                pass
+            else:
+                result.append(items[row_index - 1])
+                col_index -= items[row_index - 1][1]
+            row_index -= 1
+        return result
+
+    values = [[0 for _ in range(max_bag_capacity + 1)] for _ in range(len(items) + 1)]
+
+    for index1 in range(1, len(values)):
+        for index2 in range(1, len(values[0])):
+            current_item_weight = items[index1 - 1][1]
+            if current_item_weight > index2:
+                temp = float("-inf")
+            else:
+                temp = current_item_weight + values[index1 - 1][index2 - current_item_weight]
+
+            values[index1][index2] = max(values[index1 - 1][index2], temp)
+
+    return _get_items_producing_value_at(len(values) - 1, len(values[0]) - 1)
+
+
+def disk_stacking(disks):
+    def _get_sequence(height):
+        result = []
+        while height:
+            disk = disks[heights.index(height)]
+            result.append(disk)
+            height = height - disk[2]
+
+        return result
+
+    disks.sort(key=lambda disk: disk[2])
+
+    heights = list(map(lambda disk: disk[2], disks))
+    for index1 in range(len(disks)):
+        current_disk = disks[index1]
+        for index2 in range(index1):
+            other_disk = disks[index2]
+            if current_disk[0] >= other_disk[0] and current_disk[1] >= other_disk[1] and current_disk[2] >= other_disk[2]:
+                heights[index1] = max(heights[index1], current_disk[2] + heights[index2])
+
+    return _get_sequence(max(heights))
+
+
+def numbers_in_pi(string, start, nums):
+    if string[start:] in nums:
+        return 0
+
+    min_number_of_spaces = math.inf
+    for index in range(start + 1, len(string)):
+        if string[start: index] not in nums:
+            continue
+
+        min_number_of_spaces = min(min_number_of_spaces, 1 + numbers_in_pi(string, index, nums))
+
+    return min_number_of_spaces
+
+
+def max_sum_subarray(matrix, size):
+    def _create_sums_arr():
+        sums = matrix.copy()
+
+        for index1 in range(len(matrix)):
+            for index2 in range(len(matrix[0])):
+                upper_matrix_sum = sums[index1 - 1][index2] if index1 != 0 else 0
+                left_matrix_sum = sums[index1][index2 - 1] if index2 != 0 else 0
+                upper_left_matrix_sum = sums[index1 - 1][index2 - 1] if index1 != 0 and index2 != 0 else 0
+                sums[index1][index2] = matrix[index1][index2] + upper_matrix_sum + left_matrix_sum - upper_left_matrix_sum
+
+        return sums
+
+    assert size <= len(matrix) and size <= len(matrix[0])
+    sums_array = _create_sums_arr()
+
+    max_sum_submatrix = float("-inf")
+    for i in range(size - 1, len(matrix)):
+        for j in range(size - 1, len(matrix[0])):
+            temp1 = sums_array[i - size][j] if i - size >= 0 else 0
+            temp2 = sums_array[i][j - size] if j - size >= 0 else 0
+            temp3 = sums_array[i - size][j - size] if i - size >= 0 and j - size >= 0 else 0
+            submatrix_sum = sums_array[i][j] - temp1 - temp2 + temp3
+
+            max_sum_submatrix = max(max_sum_submatrix, submatrix_sum)
+
+
+    return max_sum_submatrix
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -461,4 +652,16 @@ if __name__ == '__main__':
                     [15, 16, 22, 23, 25]]
     print("Zigzag Traversal: {}".format(zigzag_traversal(input_matrix)))
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print("Max Sum Increasing Subsequence: {}".format(max_sum_increasing_subsequence([8, 12, 2, 3, 15, 5, 7])))
+    print("Longest Common Subsequence: {}".format(lcs("zxvvyzw", "xkykzpw")))
+
+    print("Minimum Number of Jumps: {}".format(min_number_of_jumps([2, 0, 0])))
+    print("Minimum Number of Jumps(With Caching): {}".format(min_number_of_jumps_with_caching([3, 2, 1, 0, 1], 0, dict())))
+
+    print("Water Area: {}".format(water_area([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3])))
+    print("Knapsack Problem With Dynamic Programming: {}".format(knapsack_with_dynamic_programming([[1, 2], [4, 3], [5, 6], [6, 7]], 10)))
+    print("Disk Stacking: {}".format(disk_stacking([[2, 2, 1], [2, 1, 2], [3, 2, 3], [2, 3, 4], [4, 4, 5], [2, 2, 8]])))
+    print("Numbers in PI: {}".format(numbers_in_pi("3141592", 0, ["3141", "5", "31", "2", "4159", "9", "42"])))
+    print("Maximum Sum SubArray: {}".format(max_sum_subarray(input_matrix, 3)))
+
+
