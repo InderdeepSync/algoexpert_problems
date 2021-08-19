@@ -48,6 +48,25 @@ def shifted_binary_search(arr, start, end, target):  # Verified on LeetCode
     return -1
 
 
+def index_equals_value(sorted_input, start, end):
+    min_index = float("inf")
+    while start <= end:
+        mid = (start + end)//2
+        if sorted_input[mid] > mid:
+            end = mid - 1
+        elif sorted_input[mid] == mid:
+            min_index = min(min_index, mid)
+            end = mid - 1
+        else:
+            start = mid + 1
+
+    return min_index
+
+
+
+
+
+
 if __name__ == '__main__':
     array = [12, 45, 65, 78, 83, 87, 91, 95, 99, 101]
     result = binary_search(array, 86, 0, len(array) - 1)
@@ -61,3 +80,4 @@ if __name__ == '__main__':
     print(found_coordinates)
 
     print("Shifted Binary Search: {}".format(shifted_binary_search([3, 1], start=0, end=1, target=1)))
+    print("Index Equals Value: {}".format(index_equals_value([-5, -3, 2, 3, 4, 5, 9], start=0, end=6)))
