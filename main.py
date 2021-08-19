@@ -192,6 +192,26 @@ def number_of_ways_to_make_change(target, arr):
     return no_of_ways
 
 
+def ambiguous_measurements(measuring_cups, low, high):
+    # measuring_cups.sort(key=lambda cup: (cup[0], cup[1]))
+
+    if len(measuring_cups) == 0:
+        return 0
+
+    no_of_ways = 0
+    current_high = high
+    current_low = low
+    while current_low >= 0 and current_high >= 0:
+        no_of_ways += ambiguous_measurements(measuring_cups[: -1], current_low, current_high)
+        current_low -= measuring_cups[-1][0]
+        current_high -= measuring_cups[-1][1]
+
+    if current_low <= 0 <= current_high:
+        no_of_ways += 1
+
+    return no_of_ways
+
+
 def number_of_ways_to_make_change2(target, arr):
     """
     :param target: +ve
@@ -416,6 +436,7 @@ def zigzag_traversal(matrix):
 
     return result
 
+
 def max_sum_increasing_subsequence(arr):
     max_sums_including_current = arr.copy()
     sequences = [None] * len(arr)
@@ -436,6 +457,7 @@ def max_sum_increasing_subsequence(arr):
         temp_index = sequences[temp_index]
 
     return result
+
 
 def lcs(input1, input2):
     cache = dict()
@@ -458,6 +480,7 @@ def lcs(input1, input2):
                    key=len)
 
     return longest_common_subsequence(input1, input2)
+
 
 def min_number_of_jumps(arr):
     if len(arr) == 1:
@@ -506,12 +529,18 @@ def water_area(arr):
 
     return area
 
+
 def knapsack(items, max_bag_capacity):
     if max_bag_capacity == 0 or len(items) == 0:
         return 0
 
-    temp = float("-inf") if items[-1][1] > max_bag_capacity else items[-1][0] + knapsack(items[: -1], max_bag_capacity - items[-1][1])
+    if items[-1][1] > max_bag_capacity:
+        temp = float("-inf")
+    else:
+        temp = items[-1][0] + knapsack(items[: -1], max_bag_capacity - items[-1][1])
+
     return max(knapsack(items[: -1], max_bag_capacity), temp)
+
 
 def knapsack_with_dynamic_programming(items, max_bag_capacity):
     def _get_items_producing_value_at(row_index, col_index):
@@ -558,7 +587,8 @@ def disk_stacking(disks):
         current_disk = disks[index1]
         for index2 in range(index1):
             other_disk = disks[index2]
-            if current_disk[0] >= other_disk[0] and current_disk[1] >= other_disk[1] and current_disk[2] >= other_disk[2]:
+            if current_disk[0] >= other_disk[0] and current_disk[1] >= other_disk[1] and current_disk[2] >= other_disk[
+                2]:
                 heights[index1] = max(heights[index1], current_disk[2] + heights[index2])
 
     return _get_sequence(max(heights))
@@ -587,7 +617,8 @@ def max_sum_subarray(matrix, size):
                 upper_matrix_sum = sums[index1 - 1][index2] if index1 != 0 else 0
                 left_matrix_sum = sums[index1][index2 - 1] if index2 != 0 else 0
                 upper_left_matrix_sum = sums[index1 - 1][index2 - 1] if index1 != 0 and index2 != 0 else 0
-                sums[index1][index2] = matrix[index1][index2] + upper_matrix_sum + left_matrix_sum - upper_left_matrix_sum
+                sums[index1][index2] = matrix[index1][
+                                           index2] + upper_matrix_sum + left_matrix_sum - upper_left_matrix_sum
 
         return sums
 
@@ -604,8 +635,46 @@ def max_sum_subarray(matrix, size):
 
             max_sum_submatrix = max(max_sum_submatrix, submatrix_sum)
 
-
     return max_sum_submatrix
+
+
+def is_interleave(s1, s2, target_string):
+    possible_strings = map(lambda p: p["value"], _interleave(s1, s2))
+    return target_string in possible_strings
+
+
+def _interleave(s1, s2):
+    if not s1:
+        return [{"value": s2, "index": len(s2)}]
+
+    possibilities = []
+    temp = _interleave(s1[1:], s2)
+
+    for possibility in temp:
+        for index in range(len(possibility["value"]) + 1):
+            if index > possibility["index"]:
+                break
+            temp2 = possibility["value"][:index] + s1[0] + possibility["value"][index:]
+            possibilities.append({"value": temp2, "index": index})
+
+    return possibilities
+
+
+def generate_parenthesis(num):
+    result = []
+
+    def _generate(prefix, opening_remaining, closing_remaining):
+        if not closing_remaining and not opening_remaining:
+            result.append(prefix)
+            return
+
+        if opening_remaining > 0:
+            _generate(prefix + "{", opening_remaining - 1, closing_remaining)
+        if closing_remaining > opening_remaining:
+            _generate(prefix + "}", opening_remaining, closing_remaining - 1)
+
+    _generate("", num, num)
+    return result
 
 
 # Press the green button in the gutter to run the script.
@@ -656,12 +725,15 @@ if __name__ == '__main__':
     print("Longest Common Subsequence: {}".format(lcs("zxvvyzw", "xkykzpw")))
 
     print("Minimum Number of Jumps: {}".format(min_number_of_jumps([2, 0, 0])))
-    print("Minimum Number of Jumps(With Caching): {}".format(min_number_of_jumps_with_caching([3, 2, 1, 0, 1], 0, dict())))
+    print("Minimum Number of Jumps(With Caching): {}".format(
+        min_number_of_jumps_with_caching([3, 2, 1, 0, 1], 0, dict())))
 
     print("Water Area: {}".format(water_area([0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3])))
-    print("Knapsack Problem With Dynamic Programming: {}".format(knapsack_with_dynamic_programming([[1, 2], [4, 3], [5, 6], [6, 7]], 10)))
+    print("Knapsack Problem With Dynamic Programming: {}".format(
+        knapsack_with_dynamic_programming([[1, 2], [4, 3], [5, 6], [6, 7]], 10)))
     print("Disk Stacking: {}".format(disk_stacking([[2, 2, 1], [2, 1, 2], [3, 2, 3], [2, 3, 4], [4, 4, 5], [2, 2, 8]])))
     print("Numbers in PI: {}".format(numbers_in_pi("3141592", 0, ["3141", "5", "31", "2", "4159", "9", "42"])))
     print("Maximum Sum SubArray: {}".format(max_sum_subarray(input_matrix, 3)))
-
-
+    print("Is Interleaved String: {}".format(is_interleave("dbbca", "aabcc", "aadbbcbcac")))
+    print("Generate Valid Parenthesis Combinations: {}".format(generate_parenthesis(3)))
+    print("Ambiguous Measurements: {}".format(ambiguous_measurements([[200, 210], [450, 465], [800, 850]], 2100, 2300)))
