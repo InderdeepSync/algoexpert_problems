@@ -50,20 +50,16 @@ def shift_linked_list(linked_list: Node, k):
     while end.next:
         beg = beg.next
         end = end.next
-    beg_copy = beg
-
-    values_to_shifted = []
-    while beg.next:
-        beg = beg.next
-        values_to_shifted.append(beg)
 
     initial = linked_list
-    while values_to_shifted:
-        node = values_to_shifted.pop()
-        node.next = initial
-        initial = node
+    temp = beg.next
+    beg.next = None
+    while temp:
+        temp2 = temp.next
+        temp.next = initial
+        initial = temp
+        temp = temp2
 
-    beg_copy.next = None
     return initial
 
 def reverse_linked_list(linked_list):

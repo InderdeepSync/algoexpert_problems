@@ -4,6 +4,9 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import math
+import re
+
+from suffix_tree import SuffixTree
 
 
 def evaluate(arr, depth=1):
@@ -695,6 +698,55 @@ def largest_rectangle_under_skyline(buildings):
 
     return largest_rectangle_area
 
+def longest_substring_without_duplication(input_string):
+    _, (start, end) = _longest_substring_without_duplication(input_string, 0, len(input_string))
+    return input_string[start: end]
+
+
+def _longest_substring_without_duplication(string, start, end):
+    if start == end - 1:
+        return (start, end), (start, end)
+
+    longest_left, longest_overall = _longest_substring_without_duplication(string, start + 1, end)
+
+    temp = string.find(string[start], longest_left[0], longest_left[1])
+    if temp == -1:
+        longest_left = start, longest_left[1]
+    else:
+        longest_left = start, temp
+
+    return longest_left, max(longest_left, longest_overall, key=lambda a: a[1] - a[0])
+
+
+def longest_substring_without_duplication_iterative(input_string):  # TODO To be implemented
+    pass
+
+
+def underscorify_substring(input_string, substring):
+    # TODO Similar Idea to merging overlapping Intervals
+    pass
+
+def multi_string_search(input_string, words):
+    tree = SuffixTree(char="/", children=[])
+    for word in words:
+        tree.add_suffix_to_tree(word)
+
+    words_found = set()
+    for index, ch in enumerate(input_string):
+        temp = index
+        sub_tree = tree
+        while temp < len(input_string):
+            sub_tree = sub_tree.get_child_with_char(input_string[temp])
+            if not sub_tree:
+                break
+
+            if SuffixTree.has_char_in_children(sub_tree, "*"):
+                words_found.add(input_string[index: temp + 1])
+
+            temp += 1
+
+    return words_found
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -757,4 +809,10 @@ if __name__ == '__main__':
     print("Generate Valid Parenthesis Combinations: {}".format(generate_parenthesis(3)))
     print("Ambiguous Measurements: {}".format(ambiguous_measurements([[200, 210], [450, 465], [800, 850]], 2100, 2300)))
 
-    print("Largest Rectangle Under Skyline: {}".format(largest_rectangle_under_skyline([2,1,5,6,2,3])))
+    print("Largest Rectangle Under Skyline: {}".format(largest_rectangle_under_skyline([2, 1, 5, 6, 2, 3])))
+    print("Longest Substring Without Duplication: {}".format(longest_substring_without_duplication("clementisacap")))
+
+    underscorify_string = "testthis is a testtest to see if testestest works"
+    print("Underscorify SubString: {}".format(underscorify_substring(underscorify_string, "test")))
+
+    print("Multi-String Search: {}".format(multi_string_search("this is a big string", ["this", "yo", "is", "a", "bigger", "string", "kappa"])))

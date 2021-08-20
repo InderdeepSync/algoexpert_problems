@@ -20,7 +20,7 @@ class SuffixTree:
             temp_index += 1
             sub_tree = new_sub_tree
 
-        return SuffixTree._has_char_in_children(sub_tree, "*")
+        return SuffixTree.has_char_in_children(sub_tree, "*")
 
 
     @classmethod
@@ -48,7 +48,7 @@ class SuffixTree:
 
 
     @staticmethod
-    def _has_char_in_children(tree_node, char):
+    def has_char_in_children(tree_node, char):
         return any(node.char == char for node in tree_node.children)
 
     @classmethod
