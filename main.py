@@ -676,6 +676,25 @@ def generate_parenthesis(num):
     _generate("", num, num)
     return result
 
+def largest_rectangle_under_skyline(buildings):
+    largest_rectangle_area = 0
+    areas_accumulated = {}
+
+    for index, building in enumerate(buildings):
+        for height in list(areas_accumulated.keys()):
+            if height > building:
+                del areas_accumulated[height]
+                continue
+            areas_accumulated[height] += height
+            largest_rectangle_area = max(largest_rectangle_area, areas_accumulated[height])
+
+        temp2 = buildings[index - 1] if index != 0 else 0
+        for b in range(building, temp2, -1):
+            areas_accumulated[b] = b
+            largest_rectangle_area = max(largest_rectangle_area, b)
+
+    return largest_rectangle_area
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -737,3 +756,5 @@ if __name__ == '__main__':
     print("Is Interleaved String: {}".format(is_interleave("dbbca", "aabcc", "aadbbcbcac")))
     print("Generate Valid Parenthesis Combinations: {}".format(generate_parenthesis(3)))
     print("Ambiguous Measurements: {}".format(ambiguous_measurements([[200, 210], [450, 465], [800, 850]], 2100, 2300)))
+
+    print("Largest Rectangle Under Skyline: {}".format(largest_rectangle_under_skyline([2,1,5,6,2,3])))
