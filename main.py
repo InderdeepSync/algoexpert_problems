@@ -679,6 +679,7 @@ def generate_parenthesis(num):
     _generate("", num, num)
     return result
 
+
 def largest_rectangle_under_skyline(buildings):
     largest_rectangle_area = 0
     areas_accumulated = {}
@@ -697,6 +698,7 @@ def largest_rectangle_under_skyline(buildings):
             largest_rectangle_area = max(largest_rectangle_area, b)
 
     return largest_rectangle_area
+
 
 def longest_substring_without_duplication(input_string):
     _, (start, end) = _longest_substring_without_duplication(input_string, 0, len(input_string))
@@ -726,6 +728,7 @@ def underscorify_substring(input_string, substring):
     # TODO Similar Idea to merging overlapping Intervals
     pass
 
+
 def multi_string_search(input_string, words):
     tree = SuffixTree(char="/", children=[])
     for word in words:
@@ -746,6 +749,30 @@ def multi_string_search(input_string, words):
             temp += 1
 
     return words_found
+
+
+def max_profit_with_k_transactions(profits, start, k):
+    if k == 0 or start == len(profits) - 1:
+        return 0
+
+    for i in range(start + 1, len(profits)):
+        if profits[i - 1] < profits[i]:
+            break
+    else:
+        return 0
+
+    result = max_profit_with_k_transactions(profits, start + 1, k)
+
+    for i in range(start + 1, len(profits)):
+        temp_profit = profits[i] - profits[start]
+        if temp_profit > 0:
+            max_profit = temp_profit + max_profit_with_k_transactions(profits, i + 1, k - 1)
+        else:
+            max_profit = max_profit_with_k_transactions(profits, i + 1, k)
+
+        result = max(result, max_profit)
+
+    return result
 
 
 # Press the green button in the gutter to run the script.
@@ -815,4 +842,7 @@ if __name__ == '__main__':
     underscorify_string = "testthis is a testtest to see if testestest works"
     print("Underscorify SubString: {}".format(underscorify_substring(underscorify_string, "test")))
 
-    print("Multi-String Search: {}".format(multi_string_search("this is a big string", ["this", "yo", "is", "a", "bigger", "string", "kappa"])))
+    print("Multi-String Search: {}".format(
+        multi_string_search("this is a big string", ["this", "yo", "is", "a", "bigger", "string", "kappa"])))
+    print("Max Profit with K Transactions: {}".format(
+        max_profit_with_k_transactions([5, 11, 3, 50, 60, 90], k=2, start=0)))
