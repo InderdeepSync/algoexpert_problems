@@ -184,6 +184,43 @@ class BST:
 
         return result_list
 
+    def in_order_traversal_iterative_using_stack(self, callback=print):
+        visited = set()
+        stack = [self]
+
+        while stack:
+            element = stack[-1]
+
+            if element.left is None or element.left in visited:
+                stack.pop()
+                callback(element.value)
+                visited.add(element)
+
+                if element.right is not None:
+                    stack.append(element.right)
+            else:
+                stack.append(element.left)
+
+    def in_order_traversal_iterative(self, callback=print):
+        current_node = self
+        prev_node = None
+
+        while current_node:
+            if current_node.parent is prev_node:
+                if current_node.left:
+                    next_node = current_node.left
+                else:
+                    callback(current_node.value)
+                    next_node = current_node.right if current_node.right else current_node.parent
+            elif current_node.left == prev_node:
+                callback(current_node.value)
+                next_node = current_node.right if current_node.right else current_node.parent
+            else:
+                next_node = current_node.parent
+
+            prev_node = current_node
+            current_node = next_node
+
     def pre_order_traversal(self):
         result_list = [self.value]
 
@@ -453,7 +490,7 @@ def main():
     sorted_arr = [1, 2, 5, 7, 10, 13, 14, 15, 22]
     # min_height_tree = BST.minimum_height_bst(sorted_arr, 0, len(sorted_arr) - 1)
     # print("Kth Largest Value : {}".format(tree.reverse_in_order_traversal()))
-
+    tree.in_order_traversal_iterative()
     # pre_order_bst_as_array = [10, 4, 2, 1, 5, 5, 17, 19, 18]
     # new_tree = reconstruct_bst_from_preorder_traversal(pre_order_bst_as_array)
 
