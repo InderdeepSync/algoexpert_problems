@@ -795,6 +795,21 @@ def apartment_hunting(apartments, buildings_to_consider):
 
     return data
 
+def right_smaller_than(arr):
+    mapped_arr = [{"value": item, "index": index} for index, item in enumerate(arr)]
+
+    result = [0] * len(arr)
+    update_not_required = set()
+    for index, item in enumerate(sorted(mapped_arr, key=lambda a: a["value"])):
+        update_not_required.add(item["index"])
+        for i in range(0, item["index"]):
+            if i in update_not_required:
+                continue
+
+            result[i] += 1
+
+    return result
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -869,3 +884,4 @@ if __name__ == '__main__':
         max_profit_with_k_transactions([5, 11, 3, 50, 60, 90], k=2, start=0)))
 
     print("Apartment Hunting: {}".format(apartment_hunting([["SC"], ["G"], ["G", "SC"], ["SC"], ["SC", "ST"]], ["G", "SC", "ST"])))
+    print("Right Smaller Than: {}".format(right_smaller_than([8, 5, 11, -1, 3, 4, 2])))
