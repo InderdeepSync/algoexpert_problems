@@ -774,6 +774,27 @@ def max_profit_with_k_transactions(profits, start, k):
 
     return result
 
+def apartment_hunting(apartments, buildings_to_consider):
+    # Exact Same Idea as Min Rewards Problem
+    data = {}
+    for building in buildings_to_consider:
+        data[building] = [float("inf")] * len(apartments)
+        temp = 0
+        while temp != len(apartments):
+            if building in apartments[temp]:
+                data[building][temp] = 0
+            else:
+                data[building][temp] = data[building][temp - 1] + 1
+
+            temp += 1
+
+        temp = len(apartments) - 2
+        while temp >= 0:
+            data[building][temp] = min(data[building][temp], data[building][temp + 1] + 1)
+            temp -= 1
+
+    return data
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -846,3 +867,5 @@ if __name__ == '__main__':
         multi_string_search("this is a big string", ["this", "yo", "is", "a", "bigger", "string", "kappa"])))
     print("Max Profit with K Transactions: {}".format(
         max_profit_with_k_transactions([5, 11, 3, 50, 60, 90], k=2, start=0)))
+
+    print("Apartment Hunting: {}".format(apartment_hunting([["SC"], ["G"], ["G", "SC"], ["SC"], ["SC", "ST"]], ["G", "SC", "ST"])))
