@@ -1,6 +1,10 @@
 import math
 from typing import List
 
+from linked_list import Node
+
+def is_leaf(node):
+    return node is not None and node.left is None and node.right is None
 
 class BST:
     def __init__(self, value, parent, left=None, right=None):
@@ -271,9 +275,6 @@ class BST:
     def get_leaf_nodes(self):
         leaf_nodes = []
 
-        def is_leaf(node):
-            return node is not None and node.left is None and node.right is None
-
         if self.left is not None:
             leaf_nodes.extend([self.left] if is_leaf(self.left) else self.left.get_leaf_nodes())
 
@@ -353,6 +354,56 @@ class BST:
 
         return max_branch_sum_including_root, max_sum_overall
 
+    @staticmethod
+    def get_next_larger_value(tree_node):
+        if tree_node.right:
+            temp = tree_node.right
+            while temp.left is not None:
+                temp = temp.left
+
+            return temp
+        else:
+            temp = tree_node
+            while True:
+                parent = temp.parent
+                if not parent or parent.left == temp:
+                    return parent
+
+                temp = temp.parent
+
+    @staticmethod
+    def get_next_smaller_value(tree_node):
+        if tree_node.left:
+            temp = tree_node.left
+            while temp.right is not None:
+                temp = temp.right
+
+            return temp
+        else:
+            temp = tree_node
+            while True:
+                parent = temp.parent
+                if not parent or parent.right == temp:
+                    return parent
+
+                temp = temp.parent
+
+    def minimum_value(self):
+        temp = self
+        while temp.left:
+            temp = temp.left
+        return temp
+
+    def flatten(self):
+        temp_value = self.minimum_value()
+
+        start = temp = Node(temp_value)
+        while temp:
+            temp_value = BST.get_next_larger_value(temp_value)
+            temp.next = Node(temp_value.value) if temp_value else None
+            temp = temp.next
+
+        return start
 
     @property
     def diameter(self):
@@ -510,6 +561,7 @@ def main():
     res = list(tree.branch_sums())
 
     result = tree.get_node_depths()
+    print("Node Depths: {}".format(result))
     # print(tree.pre_order_traversal())
     # print(tree.post_order_traversal())
     # BST.depth_first_search(tree)
@@ -531,8 +583,11 @@ def main():
 
     print("Max Path Sum: {}".format(BST(-3, None).max_path_sum()))
 
-    node_ref_3 = tree.insert(13.5)
+    node_ref_3 = tree.insert(12.5)
     print("Find Nodes K-distance: {}".format(find_nodes_k_distance(node_ref_3, 4, visited=set())))
+    print("Next Larger Value: {}".format(BST.get_next_larger_value(node_ref_3)))
+    print("Flatten Tree: {}".format(tree.flatten()))
+    print("Depth: {}".format(tree.depth))
 
 def create_bst_tree1():
     """
