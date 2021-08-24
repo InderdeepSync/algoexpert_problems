@@ -462,6 +462,38 @@ def max_sum_increasing_subsequence(arr):
     return result
 
 
+def longest_increasing_subsequence(arr):  # Time Complexity: O(n^2)
+    max_length_subsequence_including_current = [1] * len(arr)
+    sequences = [None] * len(arr)
+    for index1 in range(1, len(arr)):
+        for index2 in range(0, index1):
+            if arr[index2] >= arr[index1]:
+                continue
+
+            prospective_length = max_length_subsequence_including_current[index2] + 1
+            if max_length_subsequence_including_current[index1] < prospective_length:
+                max_length_subsequence_including_current[index1] = prospective_length
+                sequences[index1] = index2
+
+    temp_index = max_length_subsequence_including_current.index(max(max_length_subsequence_including_current))
+    result = []
+    while temp_index is not None:
+        result.insert(0, arr[temp_index])
+        temp_index = sequences[temp_index]
+
+    return result
+
+
+def longest_increasing_subsequence_optimal(arr):  # Time Complexity: O(nlog(n)) Utilizes binary search
+    # TODO Complete it
+    sequences = [None] * len(arr)
+    indices = [None] * (len(arr) + 1)
+    length = 0
+
+    for index, item in enumerate(arr):
+        pass
+
+
 def lcs(input1, input2):
     cache = dict()
 
@@ -774,6 +806,7 @@ def max_profit_with_k_transactions(profits, start, k):
 
     return result
 
+
 def apartment_hunting(apartments, buildings_to_consider):
     # Exact Same Idea as Min Rewards Problem
     data = {}
@@ -794,6 +827,7 @@ def apartment_hunting(apartments, buildings_to_consider):
             temp -= 1
 
     return data
+
 
 def right_smaller_than(arr):
     mapped_arr = [{"value": item, "index": index} for index, item in enumerate(arr)]
@@ -910,3 +944,8 @@ if __name__ == '__main__':
     print("Apartment Hunting: {}".format(
         apartment_hunting([["SC"], ["G"], ["G", "SC"], ["SC"], ["SC", "ST"]], ["G", "SC", "ST"])))
     print("Right Smaller Than: {}".format(right_smaller_than([8, 5, 11, -1, 3, 4, 2])))
+
+    print("Longest Increasing Subsequence: {}".format(
+        longest_increasing_subsequence([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
+    print("Longest Increasing Subsequence Optimal: {}".format(
+        longest_increasing_subsequence_optimal([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
