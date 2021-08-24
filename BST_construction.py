@@ -139,6 +139,13 @@ class BST:
 
         return result
 
+    @property
+    def depth(self):
+        left_depth = self.left.depth if self.left else -1
+        right_depth = self.right.depth if self.right else -1
+
+        return 1 + max(left_depth, right_depth)
+
     @classmethod
     def depth_first_search(cls, tree):
         if tree is None:
