@@ -1,8 +1,7 @@
 from itertools import groupby
 from pprint import pprint as pp
 
-
-def minimum_area_rectangle(points):  # Accepted on Leetcode
+def convert_into_edges_map(points):
     get_x_coordinate = lambda point: point[0]
     points.sort(key=get_x_coordinate)
 
@@ -15,6 +14,11 @@ def minimum_area_rectangle(points):  # Accepted on Leetcode
                 edges_map.setdefault(edge, []).append(key)
 
             prev_items.append(item)
+
+    return edges_map
+
+def minimum_area_rectangle(points):  # Accepted on Leetcode
+    edges_map = convert_into_edges_map(points)
 
     min_area = float('inf')
     for edge, x_coordinates in edges_map.items():
@@ -33,6 +37,19 @@ def minimum_area_rectangle(points):  # Accepted on Leetcode
     return min_area
 
 
+def rectangle_mania(points):
+    edges_map = convert_into_edges_map(points)
+
+    no_of_rectangles = 0
+    for edge, x_coordinates in edges_map.items():
+        no_of_rectangles += len(x_coordinates) * (len(x_coordinates) - 1)//2
+
+    return no_of_rectangles
+
+
 if __name__ == "__main__":
+    input_points = [[1, 1], [1, 3], [3, 1], [3, 3], [4, 1], [4, 3]]
     pp("Minimum Area Rectangle: {}".format(
-        minimum_area_rectangle([[1, 1], [1, 3], [3, 1], [3, 3], [4, 1], [4, 3]])))
+        minimum_area_rectangle(input_points)))
+
+    print("Rectangle Mania: {}".format(rectangle_mania(input_points)))
