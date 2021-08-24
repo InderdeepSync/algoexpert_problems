@@ -107,6 +107,37 @@ def _quick_select(arr, start, last, k):
     return _quick_select(arr, updated_start, updated_end, k)
 
 
+def merge_sort(arr, secondary, start, end):
+    if start == end:
+        return
+
+    mid = (start + end)//2
+
+    merge_sort(secondary, arr, start, mid)
+    merge_sort(secondary, arr, mid + 1, end)
+
+    ptr1 = k = start
+    ptr2 = mid + 1
+
+    while ptr1 <= mid and ptr2 <= end:
+        if secondary[ptr1] <= secondary[ptr2]:
+            arr[k] = secondary[ptr1]
+            ptr1 += 1
+        else:
+            arr[k] = secondary[ptr2]
+            ptr2 += 1
+        k += 1
+
+    while ptr1 <= mid:
+        arr[k] = secondary[ptr1]
+        ptr1 += 1
+        k += 1
+
+    while ptr2 <= end:
+        arr[k] = secondary[ptr2]
+        ptr2 += 1
+        k += 1
+
 
 if __name__ == "__main__":
     array = [4, 9, 1, 7, -3, 10, 0, -8, 9]
@@ -115,4 +146,7 @@ if __name__ == "__main__":
     print(sorted_arr)
 
     print("Quick Select: {}".format(quick_select(array, 4)))
+
+    merge_sort(array, array.copy(), start=0, end=8)
+    print("Merge Sort: {}".format(array))
 

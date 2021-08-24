@@ -783,7 +783,7 @@ def multi_string_search(input_string, words):
     return words_found
 
 
-def max_profit_with_k_transactions(profits, start, k):
+def max_profit_with_k_transactions(profits, start, k): #Verified on LeetCode
     if k == 0 or start == len(profits) - 1:
         return 0
 
