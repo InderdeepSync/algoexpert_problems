@@ -811,6 +811,30 @@ def right_smaller_than(arr):
     return result
 
 
+def palindrome_partitioning_min_cuts(string):
+    cache = {}
+
+    def __cachify_palindrome_partitioning(start):
+        if start not in cache:
+            cache[start] = _palindrome_partitioning_min_cuts(start)
+
+        return cache[start]
+
+    def _palindrome_partitioning_min_cuts(start):
+        if is_palindrome(string[start:]):
+            return 0
+        min_cuts = len(string) - start - 1
+
+        for i in range(start + 1, len(string)):
+            if not is_palindrome(string[start:i]):
+                continue
+            min_cuts = min(min_cuts, 1 + __cachify_palindrome_partitioning(i))
+
+        return min_cuts
+
+    return _palindrome_partitioning_min_cuts(0)
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print(evaluate([5, 2, [7, -1], 3, [6, [-13, 8], 4]]))
@@ -882,6 +906,7 @@ if __name__ == '__main__':
         multi_string_search("this is a big string", ["this", "yo", "is", "a", "bigger", "string", "kappa"])))
     print("Max Profit with K Transactions: {}".format(
         max_profit_with_k_transactions([5, 11, 3, 50, 60, 90], k=2, start=0)))
-
-    print("Apartment Hunting: {}".format(apartment_hunting([["SC"], ["G"], ["G", "SC"], ["SC"], ["SC", "ST"]], ["G", "SC", "ST"])))
+    print("Palindrome Partitioning Min Cuts: {}".format(palindrome_partitioning_min_cuts("noonabbad")))
+    print("Apartment Hunting: {}".format(
+        apartment_hunting([["SC"], ["G"], ["G", "SC"], ["SC"], ["SC", "ST"]], ["G", "SC", "ST"])))
     print("Right Smaller Than: {}".format(right_smaller_than([8, 5, 11, -1, 3, 4, 2])))
