@@ -483,6 +483,25 @@ def find_nodes_k_distance(tree_node, k, visited):
     return result
 
 
+def node_depths_recursive(tree):
+    """
+    :param tree: BST
+    :return: Sum of Depths of All Nodes in Tree and no. of nodes
+    """
+
+    if not tree:
+        return 0, 0
+
+    if is_leaf(tree):
+        return 0, 1
+
+    node_depths_left, count_of_nodes_left = node_depths_recursive(tree.left)
+    node_depths_right, count_of_nodes_right = node_depths_recursive(tree.right)
+
+    node_depths = node_depths_left + count_of_nodes_left + node_depths_right + count_of_nodes_right
+    return node_depths, count_of_nodes_right + count_of_nodes_left + 1
+
+
 def main():
     tree = create_bst_tree1()
     tree.closest_value_to(6)
