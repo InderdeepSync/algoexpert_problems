@@ -1,29 +1,31 @@
 def river_sizes(matrix):
     num_rows = len(matrix)
     num_columns = len(matrix[0])
-    seen = {(i, j): False for i in range(num_rows) for j in range(num_columns)}
+    visited = set()
 
-    river_sizes_arr = []
+    def should_explore(row_idx, col_idx):
+        return 0 <= row_idx < num_rows and 0 <= col_idx < num_columns and matrix[row_idx][col_idx] != 0 and (
+            row_idx, col_idx) not in visited
 
     def find_river(row_index, col_index):
-        is_seen = seen[(row_index, col_index)]
-        seen[(row_index, col_index)] = True
+        visited.add((row_index, col_index))
 
-        if matrix[row_index][col_index] == 0 or is_seen:
-            return 0
+        river_length = 1
+        if should_explore(row_index - 1, col_index):
+            river_length += find_river(row_index - 1, col_index)
+        if should_explore(row_index + 1, col_index):
+            river_length += find_river(row_index + 1, col_index)
+        if should_explore(row_index, col_index - 1):
+            river_length += find_river(row_index, col_index - 1)
+        if should_explore(row_index, col_index + 1):
+            river_length += find_river(row_index, col_index + 1)
 
-        river_up = find_river(row_index - 1, col_index) if row_index - 1 >= 0 else 0
-        river_down = find_river(row_index + 1, col_index) if row_index + 1 <= num_rows - 1 else 0
-        river_left = find_river(row_index, col_index - 1) if col_index - 1 >= 0 else 0
-        river_right = find_river(row_index, col_index + 1) if col_index + 1 <= num_columns - 1 else 0
-
-        river_length = 1 + river_right + river_left + river_up + river_down
         return river_length
 
-
+    river_sizes_arr = []
     for i in range(num_rows):
         for j in range(num_columns):
-            if not seen[(i, j)] and matrix[i][j] != 0:
+            if should_explore(i, j):
                 river_size = find_river(i, j)
                 river_sizes_arr.append(river_size)
 
