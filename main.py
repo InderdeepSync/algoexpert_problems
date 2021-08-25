@@ -63,25 +63,25 @@ def run_length_encoding(string):
 
 
 def first_non_repeating_character(string):
-    chars_map = {}  # {ch: (freq, indices)}
+    chars_map = {}  # {ch: freq}
+
+    for ch in string:
+        chars_map[ch] = chars_map.get(ch, 0) + 1
 
     for index, ch in enumerate(string):
-        if ch in chars_map:
-            freq, index_inner = chars_map[ch]
-            chars_map[ch] = (freq + 1, [*index_inner, index])
-            continue
+        if chars_map[ch] == 1:
+            return index
 
-        chars_map[ch] = (1, [index])
+    return -1
 
-    result_index = None
-    for ch in chars_map:
-        freq, indexes = chars_map[ch]
-        if freq != 1:
-            continue
+def minimum_waiting_time(arr):
+    arr.sort()
+    minimum_wait_time = 0
+    for index, time in enumerate(arr):
+        jobs_left = len(arr) - (index + 1)
+        minimum_wait_time += jobs_left * time
 
-        result_index = min(math.inf if result_index is None else result_index, indexes[0])
-    else:
-        return result_index
+    return minimum_wait_time
 
 
 def is_monotonic_array(arr):
