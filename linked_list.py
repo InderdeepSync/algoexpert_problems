@@ -184,18 +184,18 @@ def main():
     print(linked_list)
 
     linked_list2 = Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7, Node(8, Node(9)))))))))
-    # print("Shifted Linked List: {}".format(shift_linked_list(linked_list2, 3)))
+    print("Shifted Linked List: {}".format(shift_linked_list(linked_list2, 3)))
     # print("Reverse Linked List: {}".format(reverse_linked_list(linked_list2)))
 
     linked_list3 = Node(2, Node(6, Node(7, Node(8))))
-    linked_list4 = Node(1, Node(3, Node(4, Node(4, Node(3, Node(1))))))
-    # print("Merge Sorted Linked Lists: {}".format(merge_linked_lists(linked_list3, linked_list4)))
+    linked_list4 = Node(1, Node(3, Node(4, Node(4))))
+    print("Merge Sorted Linked Lists: {}".format(merge_linked_lists(linked_list3, linked_list4)))
 
     linked_list5 = Node(3, Node(0, Node(5, Node(3, Node(2, Node(1, Node(4, Node(-1))))))))
     print("Rearrange Linked List: {}".format(rearrange_linked_list(linked_list5, 2.5)))
 
     print("Zip Linked List: {}".format(zip_linked_list(linked_list2)))
-    print("Linked List Palindrome: {}".format(linked_list_palindrome(linked_list4)))
+    # print("Linked List Palindrome: {}".format(linked_list_palindrome(linked_list4)))
 
 
 if __name__ == "__main__":

@@ -35,20 +35,21 @@ def caesar_cipher_encryptor(string, shift_by=2):
 
 
 def run_length_encoding(string):
+    assert string
     chars = []
-    run_length = 0
-    prev_char = string[0]
 
-    for ch in string:
-        if prev_char != ch:
-            chars.append((run_length, prev_char))
+    run_length = 1
 
+    for index in range(1, len(string)):
+        current_character = string[index]
+        previous_character = string[index - 1]
+        if current_character != previous_character:
+            chars.append((run_length, previous_character))
             run_length = 0
 
         run_length += 1
-        prev_char = ch
     else:
-        chars.append((run_length, prev_char))
+        chars.append((run_length, string[-1]))
 
     final_list = []
     for count, ch in chars:
@@ -238,15 +239,15 @@ def number_of_ways_to_make_change2(target, arr):
 def single_cycle_check(arr):
     assert len(arr)
 
-    seen = []
+    seen = set()
     current_index = 0
 
     while current_index not in seen:
-        seen.append(current_index)
+        seen.add(current_index)
 
         current_index = (current_index + arr[current_index]) % len(arr)
 
-    return len(seen) == len(arr) and current_index == seen[0]
+    return len(seen) == len(arr) and current_index == 0
 
 
 def permutations(arr):

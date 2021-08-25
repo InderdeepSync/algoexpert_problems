@@ -83,8 +83,8 @@ class BST:
         return substitute_value
 
     def closest_value_to(self, num, current_closest_value=math.inf):
-        current_closest_value = self.value if abs(num - current_closest_value) >= abs(
-            num - self.value) else current_closest_value
+        if abs(num - current_closest_value) >= abs(num - self.value):
+            current_closest_value = self.value
 
         next_node = self.right if num - self.value > 0 else self.left
 
@@ -555,7 +555,7 @@ def node_depths_recursive(tree):
 
 def main():
     tree = create_bst_tree1()
-    tree.closest_value_to(6)
+    print("Find Closest Value in BST: {}".format(tree.closest_value_to(8.8)))
     invalid_bst = BST(6, None, BST(3, None), BST)
 
     res = list(tree.branch_sums())
@@ -567,8 +567,8 @@ def main():
     # BST.depth_first_search(tree)
     sorted_arr = [1, 2, 5, 7, 10, 13, 14, 15, 22]
     # min_height_tree = BST.minimum_height_bst(sorted_arr, 0, len(sorted_arr) - 1)
-    # print("Kth Largest Value : {}".format(tree.reverse_in_order_traversal()))
-    tree.in_order_traversal_iterative()
+    print("Kth Largest Value : {}".format(tree.reverse_in_order_traversal(go_upto=3)))
+    # tree.in_order_traversal_iterative()
     # pre_order_bst_as_array = [10, 4, 2, 1, 5, 5, 17, 19, 18]
     # new_tree = reconstruct_bst_from_preorder_traversal(pre_order_bst_as_array)
 
