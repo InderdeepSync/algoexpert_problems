@@ -107,7 +107,40 @@ def _quick_select(arr, start, last, k):
     return _quick_select(arr, updated_start, updated_end, k)
 
 
-def merge_sort(arr, secondary, start, end):
+def merge_sort_standard(arr):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr)//2
+    left_half = arr[: mid]
+    right_half = arr[mid:]
+
+    merge_sort_standard(left_half)
+    merge_sort_standard(right_half)
+
+    i = j = k = 0
+
+    while i < len(left_half) and j < len(right_half):
+        if left_half[i] <= right_half[j]:
+            arr[k] = left_half[i]
+            i += 1
+        else:
+            arr[k] = right_half[j]
+            j += 1
+        k += 1
+
+    while i < len(left_half):
+        arr[k] = left_half[i]
+        i += 1
+        k += 1
+
+    while j < len(right_half):
+        arr[k] = right_half[j]
+        j += 1
+        k += 1
+
+# Optimized for Space Version
+def merge_sort(arr, secondary, start, end):  # Space Complexity: O(n)
     if start == end:
         return
 
@@ -142,11 +175,8 @@ def merge_sort(arr, secondary, start, end):
 if __name__ == "__main__":
     array = [4, 9, 1, 7, -3, 10, 0, -8, 9]
 
-    sorted_arr = quick_sort(array)
-    print(sorted_arr)
-
-    print("Quick Select: {}".format(quick_select(array, 4)))
-
-    merge_sort(array, array.copy(), start=0, end=8)
+    # print("Quick Select: {}".format(quick_select(array, 4)))
+    # merge_sort(array, array.copy(), start=0, end=8)
+    # merge_sort_standard(array)
     print("Merge Sort: {}".format(array))
 
