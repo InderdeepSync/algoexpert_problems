@@ -85,19 +85,33 @@ def minimum_waiting_time(arr):
 
 
 def is_monotonic_array(arr):
-    prev_slope = None
+    if len(arr) <= 2:
+        return True
 
+    direction = arr[1] - arr[0]
     for index in range(1, len(arr)):
-        slope = arr[index] - arr[index - 1]
-        if slope == 0:
+        difference = arr[index] - arr[index - 1]
+
+        if direction == 0:
+            direction = difference
             continue
 
-        if prev_slope is not None and slope * prev_slope < 0:
+        if direction * difference < 0:
             return False
 
-        prev_slope = slope
-    else:
-        return True
+    return True
+
+def is_monotonic_array_elegant(arr):
+    is_increasing = True
+    is_decreasing = True
+
+    for i in range(1, len(arr)):
+        if arr[i] < arr[i - 1]:
+            is_increasing = False
+        if arr[i] > arr[i - 1]:
+            is_decreasing = False
+
+    return is_increasing or is_decreasing
 
 
 def array_of_products(arr):
@@ -495,7 +509,7 @@ def longest_increasing_subsequence_optimal(arr):  # Time Complexity: O(nlog(n)) 
         pass
 
 
-def lcs(input1, input2):
+def lcs(input1, input2):  # Verified on Leetcode
     cache = dict()
 
     def _calculate_lcs_and_save_in_cache(str1, str2):
@@ -872,7 +886,7 @@ def palindrome_partitioning_min_cuts(string):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print(evaluate([5, 2, [7, -1], 3, [6, [-13, 8], 4]]))
+    print("Product Sum: {}".format(evaluate([5, 2, [7, -1], 3, [6, [-13, 8], 4]])))
     print("Is Palindrome: {}".format(is_palindrome('abcedecxxcedecba')))
 
     print("Caesar Cypher Encrypted: {}".format(caesar_cipher_encryptor("wxbz", 3)))
