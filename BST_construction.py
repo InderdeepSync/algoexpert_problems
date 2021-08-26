@@ -105,7 +105,7 @@ class BST:
                     subbranches.append(branch)
                     continue
 
-                is_done = is_done and (branch["node"].left is None and branch["node"].right is None)
+                is_done = False
 
                 items = []
 
@@ -553,17 +553,46 @@ def node_depths_recursive(tree):
     return node_depths, count_of_nodes_right + count_of_nodes_left + 1
 
 
+def flatten_binary_tree_recursive(tree):
+    if not tree.left:
+        left_most = tree
+    else:
+        flattened_left_tree_head, flattened_left_tree_tail = flatten_binary_tree_recursive(tree.left)
+        flattened_left_tree_tail.right = tree
+        tree.left = flattened_left_tree_tail
+        left_most = flattened_left_tree_head
+
+    if not tree.right:
+        right_most = tree
+    else:
+        flattened_right_tree_head, flattened_right_tree_tail = flatten_binary_tree_recursive(tree.right)
+        tree.right = flattened_right_tree_head
+        flattened_right_tree_head.left = tree
+        right_most = flattened_right_tree_tail
+
+    return left_most, right_most
+
+def flatten_tree(root):
+    flattened_tree = flatten_binary_tree_recursive(root)[0]
+    result = []
+    while flattened_tree:
+        result.append(flattened_tree.value)
+        flattened_tree = flattened_tree.right
+    return result
+
+
 def main():
     tree = create_bst_tree1()
     print("Find Closest Value in BST: {}".format(tree.closest_value_to(8.8)))
     invalid_bst = BST(6, None, BST(3, None), BST)
 
     res = list(tree.branch_sums())
+    print("Branch Sums: {}".format(res))
 
     result = tree.get_node_depths()
     print("Node Depths: {}".format(result))
-    # print(tree.pre_order_traversal())
-    # print(tree.post_order_traversal())
+    print("Pre Order Traversal: {}".format(tree.pre_order_traversal()))
+    print("Post-Order Traversal: {}".format(tree.post_order_traversal()))
     # BST.depth_first_search(tree)
     sorted_arr = [1, 2, 5, 7, 10, 13, 14, 15, 22]
     # min_height_tree = BST.minimum_height_bst(sorted_arr, 0, len(sorted_arr) - 1)
@@ -587,6 +616,7 @@ def main():
     print("Find Nodes K-distance: {}".format(find_nodes_k_distance(node_ref_3, 4, visited=set())))
     print("Next Larger Value: {}".format(BST.get_next_larger_value(node_ref_3)))
     print("Flatten Tree: {}".format(tree.flatten()))
+    # print("Flatten Binary Tree Recursive: {}".format(flatten_tree(tree)))
     print("Depth: {}".format(tree.depth))
 
 def create_bst_tree1():
