@@ -264,6 +264,14 @@ def single_cycle_check(arr):
     return len(seen) == len(arr) and current_index == 0
 
 
+def group_anagrams(words):
+    anagrams_map = {}
+    for word in words:
+        key = "".join(sorted(word))
+        anagrams_map.setdefault(key, []).append(word)
+
+    return anagrams_map.values()
+
 def permutations(arr):
     temp = [[arr[0]]]
     for index in range(1, len(arr)):
@@ -896,6 +904,8 @@ if __name__ == '__main__':
     print("First Non Repeating Character: {}".format(first_non_repeating_character("abcdcaf")))
 
     print("Is Monotonic Array: {}".format(is_monotonic_array([3, 1, -10, -1100, -1100, -1101, -1102, -9001])))
+
+    print("Group Anagrams: {}".format(group_anagrams(["yo", "act", "flop", "tac", "cat", "oy", "olfp"])))
 
     print("Array of Products: {}".format(array_of_products([5, 0, 0, 2])))
 
