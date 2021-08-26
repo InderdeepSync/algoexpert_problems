@@ -64,7 +64,7 @@ def shift_linked_list(linked_list: Node, k):
     return initial
 
 
-def reverse_linked_list(linked_list):
+def reverse_linked_list(linked_list):  # Verified
     prev = linked_list
     current = linked_list.next
     linked_list.next = None
@@ -129,7 +129,7 @@ def rearrange_linked_list(list1, k):
     return less_start.next
 
 
-def _split_linked_list(linked_list):
+def _split_linked_list(linked_list):  # Verified
     slow = fast = linked_list
 
     while fast.next and fast.next.next:
@@ -139,6 +139,7 @@ def _split_linked_list(linked_list):
     second_list = slow.next
     slow.next = None
     return linked_list, second_list
+
 
 def zip_linked_list(list1):
     list1, list2 = _split_linked_list(list1)
@@ -162,7 +163,7 @@ def zip_linked_list(list1):
     return result_list.next
 
 
-def linked_list_palindrome(linked_list):
+def linked_list_palindrome(linked_list): # Verified on Leetcode
     list1, list2 = _split_linked_list(linked_list)
     list2 = reverse_linked_list(list2) if list2 else None
 
@@ -175,6 +176,24 @@ def linked_list_palindrome(linked_list):
 
         list1 = list1.next
         list2 = list2.next
+
+
+def remove_nth_node_from_end(linked_list, n: int):  # Verified on Leetcode
+    start = end = linked_list
+    for _ in range(n - 1):
+        end = end.next
+
+    prev_node = None
+    while end.next:
+        prev_node = start
+        start = start.next
+        end = end.next
+
+    if not prev_node:
+        return linked_list.next
+    prev_node.next = start.next
+
+    return linked_list
 
 
 def main():
@@ -195,7 +214,10 @@ def main():
     print("Rearrange Linked List: {}".format(rearrange_linked_list(linked_list5, 2.5)))
 
     print("Zip Linked List: {}".format(zip_linked_list(linked_list2)))
-    # print("Linked List Palindrome: {}".format(linked_list_palindrome(linked_list4)))
+    print("Linked List Palindrome: {}".format(linked_list_palindrome(linked_list4)))
+
+    linked_list6 = Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7, Node(8, Node(9)))))))))
+    print("Remove nth Node from end of list: {}".format(remove_nth_node_from_end(Node(1), 1)))
 
 
 if __name__ == "__main__":
