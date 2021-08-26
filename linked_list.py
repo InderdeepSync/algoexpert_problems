@@ -195,6 +195,48 @@ def remove_nth_node_from_end(linked_list, n: int):  # Verified on Leetcode
 
     return linked_list
 
+def sum_of_linked_lists(list1, list2):  # Verified on LeetCode
+    result = temp = Node("/")
+    ptr1 = list1
+    ptr2 = list2
+    carry = 0
+
+    while ptr1 and ptr2:
+        new_value = ptr1.value + ptr2.value + carry
+        carry = new_value // 10
+        new_value = new_value % 10
+
+        temp.next = Node(new_value)
+        temp = temp.next
+
+        ptr1 = ptr1.next
+        ptr2 = ptr2.next
+
+    while ptr1:
+        new_value = ptr1.value + carry
+        carry = new_value // 10
+        new_value = new_value % 10
+
+        temp.next = Node(new_value)
+        temp = temp.next
+
+        ptr1 = ptr1.next
+
+    while ptr2:
+        new_value = ptr2.value + carry
+        carry = new_value // 10
+        new_value = new_value % 10
+
+        temp.next = Node(new_value)
+        temp = temp.next
+
+        ptr2 = ptr2.next
+
+    if carry == 1:
+        temp.next = Node(carry)
+
+    return result.next
+
 
 def main():
     linked_list = Node(1, Node(1, Node(2, Node(2, Node(3, Node(5, Node(5, Node(5))))))))
@@ -218,6 +260,10 @@ def main():
 
     linked_list6 = Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7, Node(8, Node(9)))))))))
     print("Remove nth Node from end of list: {}".format(remove_nth_node_from_end(Node(1), 1)))
+
+    num1 = Node(2, Node(4, Node(7, Node(1))))
+    num2 = Node(9, Node(4, Node(5)))
+    print("Sum of Linked Lists: {}".format(sum_of_linked_lists(num1, num2)))
 
 
 if __name__ == "__main__":
