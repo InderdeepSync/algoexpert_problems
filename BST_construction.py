@@ -3,8 +3,10 @@ from typing import List
 
 from linked_list import Node
 
+
 def is_leaf(node):
     return node is not None and node.left is None and node.right is None
+
 
 class BST:
     def __init__(self, value, parent, left=None, right=None):
@@ -121,27 +123,35 @@ class BST:
         return map(lambda b: b["sum"], branches)
 
     def get_node_depths(self):
+        def _create_node_info(node, depth):
+            return {"node": node, "depth": depth}
+
         result = {}
-        branches = [self]
-        depth = 0
+        branches = [_create_node_info(self, 0)]
 
         while branches:
-            subbranches = []
-
-            for branch in branches:
-                result[branch.value] = depth
-                items = []
-
-                if branch.left is not None:
-                    items.append(branch.left)
-                if branch.right is not None:
-                    items.append(branch.right)
-
-                subbranches.extend(items)
-            depth += 1
-            branches = subbranches
+            branch = branches.pop()
+            branch_node = branch["node"]
+            branch_depth = branch["depth"]
+            result[branch_node.value] = branch_depth
+            if branch_node.left is not None:
+                branches.append(_create_node_info(branch_node.left, branch_depth + 1))
+            if branch_node.right is not None:
+                branches.append(_create_node_info(branch_node.right, branch_depth + 1))
 
         return result
+
+    def node_depths_sum(self, depth=0):
+        if self.left:
+            left_subtree_node_depths_sum = self.left.node_depths_sum(depth=depth + 1)
+        else:
+            left_subtree_node_depths_sum = 0
+        if self.right:
+            right_subtree_node_depths_sum = self.right.node_depths_sum(depth=depth + 1)
+        else:
+            right_subtree_node_depths_sum = 0
+
+        return depth + left_subtree_node_depths_sum + right_subtree_node_depths_sum
 
     @property
     def depth(self):
@@ -170,7 +180,6 @@ class BST:
             if node.right:
                 nodes.append(node.right)
 
-
     @classmethod
     def validate_bst(cls, tree, min_value=-math.inf, max_value=math.inf):
         if tree is None:
@@ -180,7 +189,7 @@ class BST:
             return False
 
         return cls.validate_bst(tree.left, min_value=min_value, max_value=tree.value) and \
-            cls.validate_bst(tree.right, min_value=tree.value, max_value=max_value)
+               cls.validate_bst(tree.right, min_value=tree.value, max_value=max_value)
 
     def in_order_traversal(self):
         result_list = []
@@ -199,12 +208,14 @@ class BST:
         visited = set()
         stack = [self]
 
+        result = []
+
         while stack:
             element = stack[-1]
 
             if element.left is None or element.left in visited:
                 stack.pop()
-                callback(element.value)
+                result.append(element.value)
                 visited.add(element)
 
                 if element.right is not None:
@@ -212,25 +223,29 @@ class BST:
             else:
                 stack.append(element.left)
 
-    def in_order_traversal_iterative(self, callback=print):
+        return result
+
+    def in_order_traversal_iterative(self):
         current_node = self
         prev_node = None
 
+        result = []
         while current_node:
             if current_node.parent is prev_node:
                 if current_node.left:
                     next_node = current_node.left
                 else:
-                    callback(current_node.value)
+                    result.append(current_node.value)
                     next_node = current_node.right if current_node.right else current_node.parent
             elif current_node.left == prev_node:
-                callback(current_node.value)
+                result.append(current_node.value)
                 next_node = current_node.right if current_node.right else current_node.parent
             else:
                 next_node = current_node.parent
 
             prev_node = current_node
             current_node = next_node
+        return result
 
     def pre_order_traversal(self):
         result_list = [self.value]
@@ -261,7 +276,7 @@ class BST:
         if start > end:
             return None
 
-        mid = math.floor((start + end)/2)
+        mid = math.floor((start + end) / 2)
         tree = BST(arr[mid], parent)
 
         left_subtree = cls.minimum_height_bst(arr, start, mid - 1, tree)
@@ -294,7 +309,6 @@ class BST:
 
         return all_nodes
 
-
     def reverse_in_order_traversal(self, go_upto=4):
         # Returns BST Elements in Descending order
         result_list = []
@@ -308,7 +322,7 @@ class BST:
             return result_list[:go_upto]
 
         if self.left is not None:
-            result_list.extend(self.left.reverse_in_order_traversal(go_upto=go_upto-len(result_list)))
+            result_list.extend(self.left.reverse_in_order_traversal(go_upto=go_upto - len(result_list)))
 
         return result_list
 
@@ -338,7 +352,7 @@ class BST:
         is_right_tree_balanced = self.right.is_balanced() if self.right else True
 
         return is_left_tree_balanced and is_right_tree_balanced and \
-            abs(BST._height_or_default(self.left) - BST._height_or_default(self.right)) <= 1
+               abs(BST._height_or_default(self.left) - BST._height_or_default(self.right)) <= 1
 
     def max_path_sum(self):  # Verified on Leetcode
         max_left_sum_branch_including_root, max_left_sum_overall = self.left.max_path_sum() if self.left else (0, 0)
@@ -434,8 +448,7 @@ class BST:
         return max(map(get_longest_path_across_tree, self.get_leaf_nodes()))
 
 
-
-def reconstruct_bst_from_preorder_traversal(arr, parent=None):
+def reconstruct_bst_from_preorder_traversal(arr, parent=None):  # Accepted on LeetCode
     if not arr:
         return None
 
@@ -448,9 +461,10 @@ def reconstruct_bst_from_preorder_traversal(arr, parent=None):
 
     tree.left = reconstruct_bst_from_preorder_traversal(arr[1: right_subtree_starts_at], tree)
     if right_subtree_starts_at is not None:
-        tree.right = reconstruct_bst_from_preorder_traversal((arr[right_subtree_starts_at: ]))
+        tree.right = reconstruct_bst_from_preorder_traversal((arr[right_subtree_starts_at:]))
 
     return tree
+
 
 def find_successor(tree, node):
     assert node is not None
@@ -469,6 +483,7 @@ def find_successor(tree, node):
         node = node.parent
 
     return -1
+
 
 def parent_chain(node):
     while node:
@@ -515,6 +530,7 @@ def is_same_bst(bst1: List, bst2: List):
 
     return bst1[0] == bst2[0] and is_same_bst(left_subtree_original, left_subtree) and is_same_bst(
         right_subtree_original, right_subtree)
+
 
 def find_nodes_k_distance(tree_node, k, visited):
     result = []
@@ -572,6 +588,7 @@ def flatten_binary_tree_recursive(tree):
 
     return left_most, right_most
 
+
 def flatten_tree(root):
     flattened_tree = flatten_binary_tree_recursive(root)[0]
     result = []
@@ -583,6 +600,7 @@ def flatten_tree(root):
 
 def main():
     tree = create_bst_tree1()
+    tree2 = create_bst_tree2()
     print("Find Closest Value in BST: {}".format(tree.closest_value_to(8.8)))
     invalid_bst = BST(6, None, BST(3, None), BST)
 
@@ -590,7 +608,7 @@ def main():
     print("Branch Sums: {}".format(res))
 
     result = tree.get_node_depths()
-    print("Node Depths: {}".format(result))
+    print("Node Depths: {}".format(tree.node_depths_sum()))
     print("Pre Order Traversal: {}".format(tree.pre_order_traversal()))
     print("Post-Order Traversal: {}".format(tree.post_order_traversal()))
     # BST.depth_first_search(tree)
@@ -602,8 +620,7 @@ def main():
     # new_tree = reconstruct_bst_from_preorder_traversal(pre_order_bst_as_array)
 
     # leaf_nodes = tree.get_leaf_nodes()
-    tree2 = create_bst_tree2()
-    print("In-Order Traversal: {}".format(tree.in_order_traversal()))
+    print("In-Order Traversal: {}".format(tree.in_order_traversal_iterative_using_stack()))
 
     # node_ref_1 = tree.insert(45)
     # node_ref_2 = tree.insert(15.5)
@@ -618,6 +635,7 @@ def main():
     print("Flatten Tree: {}".format(tree.flatten()))
     # print("Flatten Binary Tree Recursive: {}".format(flatten_tree(tree)))
     print("Depth: {}".format(tree.depth))
+
 
 def create_bst_tree1():
     """
@@ -650,6 +668,7 @@ def create_bst_tree1():
     tree.insert(12)
     tree.insert(8)
     return tree
+
 
 def create_bst_tree2():
     """

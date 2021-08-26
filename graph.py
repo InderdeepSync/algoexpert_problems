@@ -154,7 +154,7 @@ def topological_sort(graph):
 def get_lowest_common_manager(graph, target_set):
     return lowest_common_manager(graph, target_set)["lowest_common_manager"]
 
-def lowest_common_manager(graph, target_set):
+def lowest_common_manager(graph, target_set):  # Verified on LeetCode, however TODO: Explore Alternate Solutions
     nodes_found = set()
     for child_graph in graph.children:
         lcm = lowest_common_manager(child_graph, target_set)
