@@ -1,4 +1,4 @@
-res = 0
+
 
 def remove_islands(matrix): # Verified on LeetCode(Number of Enclaves)
     num_rows = len(matrix)
@@ -10,7 +10,6 @@ def remove_islands(matrix): # Verified on LeetCode(Number of Enclaves)
     connected_to_edge = {}
     for i in range(num_rows):
         for j in range(num_columns):
-
             if matrix[i][j] == 0:
                 is_conn = False
             elif i in edge_rows or j in edge_columns:
@@ -36,11 +35,6 @@ def remove_islands(matrix): # Verified on LeetCode(Number of Enclaves)
         is_down_connected = is_connected_to_edge_one(row_index + 1, col_index, currently_processing)
 
         is_connected = is_right_connected or is_left_connected or is_up_connected or is_down_connected
-
-        if matrix[row_index][col_index] == 1 and int(is_connected) == 0:
-            global res
-            print(row_index, col_index)
-            res = res + 1
 
         matrix[row_index][col_index] = int(is_connected)
         return is_connected

@@ -4,11 +4,25 @@ def move_element_to_end(arr, target):
 
     for i in range(len(arr)):
         if arr[i] != target:
-            temp = arr[i]
-            arr[i] = arr[last_index]
-            arr[last_index] = temp
-
+            arr[i], arr[last_index] = arr[last_index], arr[i]
             last_index += 1
+
+    return arr
+
+
+def move_element_to_end2(arr, target):  # Alternate Solution via Double Pointers
+    j = len(arr) - 1
+    i = 0
+
+    while i < j:
+        while arr[j] == target:
+            j = j - 1
+
+        if arr[i] == target:
+            arr[i], arr[j] = arr[j], arr[i]
+            j -= 1
+
+        i += 1
 
     return arr
 

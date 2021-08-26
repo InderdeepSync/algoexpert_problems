@@ -1,5 +1,4 @@
 
-
 class Graph:
     def __init__(self, name):
         self.children = []
@@ -50,7 +49,7 @@ def breadth_first_traversal(adjacency_matrix, vertice):
     return res
 
 
-def cycle_in_graph(adjacency_matrix): # Accepted on LeetCode
+def cycle_in_graph(adjacency_matrix):  # Accepted on LeetCode
     vertices = set(range(len(adjacency_matrix)))
 
     def _depth_first_traversal(vertex, visited):
