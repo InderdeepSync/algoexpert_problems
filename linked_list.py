@@ -40,7 +40,7 @@ def remove_duplicates_from_sorted_list(linked_list):
     return initial
 
 
-def shift_linked_list(linked_list: Node, k):
+def shift_linked_list(linked_list: Node, k):  # Verified on AlgoExpert
     k = k % len(linked_list)
 
     beg = linked_list
@@ -52,14 +52,9 @@ def shift_linked_list(linked_list: Node, k):
         beg = beg.next
         end = end.next
 
-    initial = linked_list
-    temp = beg.next
+    end.next = linked_list
+    initial = beg.next
     beg.next = None
-    while temp:
-        temp2 = temp.next
-        temp.next = initial
-        initial = temp
-        temp = temp2
 
     return initial
 
@@ -245,7 +240,7 @@ def main():
     print(linked_list)
 
     linked_list2 = Node(1, Node(2, Node(3, Node(4, Node(5, Node(6, Node(7, Node(8, Node(9)))))))))
-    print("Shifted Linked List: {}".format(shift_linked_list(linked_list2, 3)))
+    print("Shifted Linked List: {}".format(shift_linked_list(linked_list2, -2)))
     # print("Reverse Linked List: {}".format(reverse_linked_list(linked_list2)))
 
     linked_list3 = Node(2, Node(6, Node(7, Node(8))))
