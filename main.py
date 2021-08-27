@@ -113,6 +113,21 @@ def is_monotonic_array_elegant(arr):
 
     return is_increasing or is_decreasing
 
+def sorted_squared_array(arr):
+    left = 0
+    right = len(arr) - 1
+
+    result_arr = []
+    while left <= right:
+        if abs(arr[right]) >= abs(arr[left]):
+            result_arr.insert(0, arr[right] * arr[right])
+            right -= 1
+        else:
+            result_arr.insert(0, arr[left] * arr[left])
+            left += 1
+
+    return result_arr
+
 
 def array_of_products(arr):
     product = 1
@@ -974,3 +989,4 @@ if __name__ == '__main__':
         longest_increasing_subsequence([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
     print("Longest Increasing Subsequence Optimal: {}".format(
         longest_increasing_subsequence_optimal([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
+    print("Sorted Squared Array: {}".format(sorted_squared_array([-9, -6, -1, 0, 2, 4, 12])))
