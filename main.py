@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-# This is a sample Python script.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import math
 import re
+from typing import List
 
+from heap import Heap
 from suffix_tree import SuffixTree
 
 
@@ -74,6 +73,7 @@ def first_non_repeating_character(string):
 
     return -1
 
+
 def minimum_waiting_time(arr):
     arr.sort()
     minimum_wait_time = 0
@@ -101,6 +101,7 @@ def is_monotonic_array(arr):
 
     return True
 
+
 def is_monotonic_array_elegant(arr):
     is_increasing = True
     is_decreasing = True
@@ -112,6 +113,7 @@ def is_monotonic_array_elegant(arr):
             is_decreasing = False
 
     return is_increasing or is_decreasing
+
 
 def sorted_squared_array(arr):
     left = 0
@@ -187,7 +189,7 @@ def merge_overlapping_intervals(intervals):
     return merged_intervals
 
 
-def max_subset_sum_no_adjacent(arr):
+def max_subset_sum_no_adjacent(arr):  # Verified on Leetcode
     if not arr:
         return
     if len(arr) == 1:
@@ -203,7 +205,7 @@ def max_subset_sum_no_adjacent(arr):
     return prev_max_sum
 
 
-def number_of_ways_to_make_change(target, arr):
+def number_of_ways_to_make_change(target, arr):  # Verified on Leetcode
     """
     :param target: +ve
     :param arr: [SORTED]
@@ -223,6 +225,29 @@ def number_of_ways_to_make_change(target, arr):
         current_target -= arr[-1]
 
     return no_of_ways
+
+
+def number_of_ways_to_make_change_optimal(amount: int, coins: List[int]) -> int:  # Verified on Leetcode
+    ways = [0 for _ in range(amount + 1)]
+    ways[0] = 1
+
+    for coin in coins:
+        for i in range(1, len(ways)):
+            if coin <= i:
+                ways[i] += ways[i - coin]
+
+    return ways[-1]
+
+def min_number_of_coins_for_change(coins: List[int], amount: int) -> int:  # Verified on Leetcode
+    num_coins = [float("inf") for _ in range(amount + 1)]
+    num_coins[0] = 0
+
+    for coin in coins:
+        for i in range(1, len(num_coins)):
+            if coin <= i:
+                num_coins[i] = min(num_coins[i], 1 + num_coins[i - coin])
+
+    return num_coins[-1] if not math.isinf(num_coins[-1]) else -1
 
 
 def ambiguous_measurements(measuring_cups, low, high):
@@ -286,6 +311,7 @@ def group_anagrams(words):
         anagrams_map.setdefault(key, []).append(word)
 
     return anagrams_map.values()
+
 
 def permutations(arr):
     temp = [[arr[0]]]
@@ -497,7 +523,7 @@ def max_sum_increasing_subsequence(arr):
         result.append(arr[temp_index])
         temp_index = sequences[temp_index]
 
-    return result
+    return list(reversed(result))
 
 
 def longest_increasing_subsequence(arr):  # Time Complexity: O(n^2)
@@ -644,18 +670,11 @@ def knapsack_with_dynamic_programming(items, max_bag_capacity):
 
 
 def disk_stacking(disks):
-    def _get_sequence(height):
-        result = []
-        while height:
-            disk = disks[heights.index(height)]
-            result.append(disk)
-            height = height - disk[2]
-
-        return result
-
     disks.sort(key=lambda disk: disk[2])
 
     heights = list(map(lambda disk: disk[2], disks))
+    sequences = [None for _ in range(len(disks))]
+
     for index1 in range(len(disks)):
         current_disk = disks[index1]
         for index2 in range(index1):
@@ -663,9 +682,15 @@ def disk_stacking(disks):
             if current_disk[0] >= other_disk[0] and current_disk[1] >= other_disk[1] and current_disk[2] >= other_disk[
                 2]:
                 heights[index1] = max(heights[index1], current_disk[2] + heights[index2])
+                sequences[index1] = index2
 
-    return _get_sequence(max(heights))
+    result_arr = []
+    temp_index = heights.index(max(heights))
+    while temp_index:
+        result_arr.append(disks[temp_index])
+        temp_index = sequences[temp_index]
 
+    return result_arr
 
 def numbers_in_pi(string, start, nums):
     if string[start:] in nums:
@@ -821,7 +846,7 @@ def multi_string_search(input_string, words):
     return words_found
 
 
-def max_profit_with_k_transactions(profits, start, k): #Verified on LeetCode
+def max_profit_with_k_transactions(profits, start, k):  # Verified on LeetCode
     if k == 0 or start == len(profits) - 1:
         return 0
 
@@ -907,7 +932,38 @@ def palindrome_partitioning_min_cuts(string):
     return _palindrome_partitioning_min_cuts(0)
 
 
-# Press the green button in the gutter to run the script.
+def sort_k_sorted_array(arr, k):
+    heap = Heap(arr[:min(k + 1, len(arr))])
+    sorted_index = 0
+
+    for i in range(k + 1, len(arr)):
+        arr[sorted_index] = heap.remove()
+        sorted_index += 1
+        heap.insert(arr[i])
+
+    while len(heap) != 0:
+        arr[sorted_index] = heap.remove()
+        sorted_index += 1
+
+    return arr
+
+
+def subarray_sort(nums):  # Verified on Leetcode
+    sorted_nums = sorted(nums.copy())
+
+    beg_index = 0
+    while nums[beg_index] == sorted_nums[beg_index]:
+        beg_index += 1
+        if beg_index == len(nums):
+            return 0
+
+    end_index = len(nums) - 1
+    while nums[end_index] == sorted_nums[end_index]:
+        end_index -= 1
+
+    return end_index - beg_index + 1
+
+
 if __name__ == '__main__':
     print("Product Sum: {}".format(evaluate([5, 2, [7, -1], 3, [6, [-13, 8], 4]])))
     print("Is Palindrome: {}".format(is_palindrome('abcedecxxcedecba')))
@@ -990,3 +1046,5 @@ if __name__ == '__main__':
     print("Longest Increasing Subsequence Optimal: {}".format(
         longest_increasing_subsequence_optimal([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
     print("Sorted Squared Array: {}".format(sorted_squared_array([-9, -6, -1, 0, 2, 4, 12])))
+    print("Sort k-sorted Array: {}".format(sort_k_sorted_array([3, 2, 1, 5, 4, 7, 6, 5], k=3)))
+    print("Subarray Sort: {}".format(subarray_sort([1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19])))
