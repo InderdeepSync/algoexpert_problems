@@ -1,4 +1,3 @@
-
 class Graph:
     def __init__(self, name):
         self.children = []
@@ -20,6 +19,7 @@ def number_of_ways_to_traverse_graph(height, width):
 
     return number_of_ways_to_traverse_graph(height - 1, width) + number_of_ways_to_traverse_graph(height, width - 1)
 
+
 def depth_first_traversal(adjacency_matrix, vertice, visited):
     assert 0 <= vertice <= len(adjacency_matrix) - 1
 
@@ -30,6 +30,7 @@ def depth_first_traversal(adjacency_matrix, vertice, visited):
         res.extend(depth_first_traversal(adjacency_matrix, child, visited))
 
     return res
+
 
 def breadth_first_traversal(adjacency_matrix, vertice):
     assert 0 <= vertice <= len(adjacency_matrix) - 1
@@ -50,25 +51,30 @@ def breadth_first_traversal(adjacency_matrix, vertice):
 
 
 def cycle_in_graph(adjacency_matrix):  # Accepted on LeetCode
-    vertices = set(range(len(adjacency_matrix)))
-
-    def _depth_first_traversal(vertex, visited):
-        if vertex in visited:
+    def _depth_first_traversal(vertex):
+        if vertex in currently_in_stack:
             return True
+        if vertex in visited:
+            return False
 
         visited.add(vertex)
+        currently_in_stack.add(vertex)
 
         for child in adjacency_matrix[vertex]:
-            if _depth_first_traversal(child, set(visited)):
+            if _depth_first_traversal(child):
                 return True
 
+        currently_in_stack.remove(vertex)
         return False
 
-    for vertice in vertices:
-        if _depth_first_traversal(vertice, set()):
+    visited = set()
+    currently_in_stack = set()
+    for vertice in range(len(adjacency_matrix)):
+        if _depth_first_traversal(vertice):
             return True
 
     return False
+
 
 def dijkstra_algorithm(graph, start_node):
     def _get_next_min_distance_vertex():
@@ -132,6 +138,7 @@ def topological_sort_kahn(graph):
 
     return result
 
+
 def topological_sort(graph):
     def _dfs(vertex):
         visited.add(vertex)
@@ -151,8 +158,10 @@ def topological_sort(graph):
     stack.reverse()
     return stack
 
+
 def get_lowest_common_manager(graph, target_set):
     return lowest_common_manager(graph, target_set)["lowest_common_manager"]
+
 
 def lowest_common_manager(graph, target_set):  # Verified on LeetCode, however TODO: Explore Alternate Solutions
     nodes_found = set()
