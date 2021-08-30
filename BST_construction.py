@@ -94,6 +94,15 @@ class BST:
             return current_closest_value
         return next_node.closest_value_to(num, current_closest_value)
 
+    def branch_sums_elegant(self):
+        if is_leaf(self):
+            return [self.value]
+
+        left_branch_sums = self.left.branch_sums_elegant() if self.left else []
+        right_branch_sums = self.right.branch_sums_elegant() if self.right else []
+
+        return list(map(lambda s: s + self.value, left_branch_sums + right_branch_sums))
+
     def branch_sums(self):
         branches = [{"node": self, "sum": self.value}]
 
@@ -447,6 +456,16 @@ class BST:
 
         return max(map(get_longest_path_across_tree, self.get_leaf_nodes()))
 
+    def get_diameter(self):  # Verified on Leetcode
+        left_diameter, longest_branch_length_left_subtree = self.left.get_diameter() if self.left else (0, -1)
+        right_diameter, longest_branch_length_right_subtree = self.right.get_diameter() if self.right else (0, -1)
+
+        potential_diameter = 2 + longest_branch_length_left_subtree + longest_branch_length_right_subtree
+        diameter = max(left_diameter, right_diameter, potential_diameter)
+        longest_branch = 1 + max(longest_branch_length_left_subtree, longest_branch_length_right_subtree)
+
+        return diameter, longest_branch
+
 
 def reconstruct_bst_from_preorder_traversal(arr, parent=None):  # Accepted on LeetCode
     if not arr:
@@ -492,17 +511,17 @@ def parent_chain(node):
 
 
 def youngest_common_ancestor(node1, node2):
-    chain1 = list(parent_chain(node1))
-    chain1.reverse()
-
-    chain2 = list(parent_chain(node2))
-    chain2.reverse()
+    chain1 = reversed(list(parent_chain(node1)))
+    chain2 = reversed(list(parent_chain(node2)))
 
     common_ancestor = None
-    while chain1[0] is chain2[0]:
-        common_ancestor = chain1[0]
-        chain1 = chain1[1:]
-        chain2 = chain2[1:]
+    while True:
+        parent1 = next(chain1, None)
+        parent2 = next(chain2, None)
+
+        if parent1 is None or parent2 is None or parent1 != parent2:
+            break
+        common_ancestor = parent1
 
     return common_ancestor
 
@@ -606,7 +625,8 @@ def main():
 
     res = list(tree.branch_sums())
     print("Branch Sums: {}".format(res))
-
+    print("Branch Sums Elegant: {}".format(tree.branch_sums_elegant()))
+    print("Binary Tree Diameter {}".format(tree.get_diameter()))
     result = tree.get_node_depths()
     print("Node Depths: {}".format(tree.node_depths_sum()))
     print("Pre Order Traversal: {}".format(tree.pre_order_traversal()))
@@ -622,9 +642,9 @@ def main():
     # leaf_nodes = tree.get_leaf_nodes()
     print("In-Order Traversal: {}".format(tree.in_order_traversal_iterative_using_stack()))
 
-    # node_ref_1 = tree.insert(45)
-    # node_ref_2 = tree.insert(15.5)
-    # print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
+    node_ref_1 = tree.insert(45)
+    node_ref_2 = tree.insert(15.5)
+    print("Youngest Common Ancestor: {}".format(youngest_common_ancestor(node_ref_1, node_ref_2)))
     print("Is Same BST: {}".format(is_same_bst([10, 15, 8, 12, 94, 81, 5, 2, 11], [10, 8, 5, 15, 2, 12, 11, 94, 81])))
 
     print("Max Path Sum: {}".format(BST(-3, None).max_path_sum()))
