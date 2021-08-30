@@ -580,6 +580,16 @@ def min_number_of_jumps(arr):
 
     return min_jumps + 1
 
+def min_num_of_jumps_effective(arr):  # Accepted on Leetcode
+    min_jumps = [float("inf") for _ in arr]
+    min_jumps[-1] = 0
+
+    for i in reversed(range(0, len(arr) - 1)):
+        for j in range(i + 1, min(i + 1 + min_jumps[i], len(arr))):
+            min_jumps[i] = min(min_jumps[i], 1 + min_jumps[j])
+
+    return min_jumps[0]
+
 
 def min_number_of_jumps_with_caching(arr, start, cache):
     if len(arr) - 1 == start:
