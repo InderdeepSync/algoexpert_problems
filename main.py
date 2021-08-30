@@ -131,34 +131,21 @@ def sorted_squared_array(arr):
     return result_arr
 
 
-def array_of_products(arr):
-    product = 1
-    zero_index = None
+def array_of_products(arr):  # Verified on Leetcode
+    result_arr = [1 for _ in range(len(arr))]
 
-    for index, item in enumerate(arr):
-        if item != 0:
-            product *= item
-        else:
-            zero_index = index
-            break
-    else:
-        res = []
-        for item in arr:
-            res.append(int(product / item))
+    left_running_product = arr[0]
+    right_running_product = arr[-1]
 
-        return res
-    product_without_zero = 1
-    for index, item in enumerate(arr):
-        if index == zero_index:
-            continue
+    for i in range(1, len(arr)):
+        result_arr[i] *= left_running_product
+        left_running_product *= arr[i]
 
-        if item == 0:
-            product_without_zero = 0
-            break
+    for i in range(len(arr) - 2, -1, -1):
+        result_arr[i] *= right_running_product
+        right_running_product *= arr[i]
 
-        product_without_zero *= item
-
-    return [0] * zero_index + [product_without_zero] + [0] * (len(arr) - zero_index - 1)
+    return result_arr
 
 
 def first_duplicate_value(arr):
@@ -172,7 +159,7 @@ def first_duplicate_value(arr):
     return -1
 
 
-def merge_overlapping_intervals(intervals):
+def merge_overlapping_intervals(intervals: List):  # Accepted on Leetcode
     intervals.sort(key=lambda item: item[0])
     merged_intervals = [intervals[0]]
 
