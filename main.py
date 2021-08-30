@@ -831,8 +831,20 @@ def _longest_substring_without_duplication(string, start, end):
     return longest_left, max(longest_left, longest_overall, key=lambda a: a[1] - a[0])
 
 
-def longest_substring_without_duplication_iterative(input_string):  # TODO To be implemented
-    pass
+def longest_substring_without_duplication_iterative(input_string):  # Verified on Leetcode
+    last_seen = {}
+    start_index = 0
+    current_longest_substring = (0, 1)
+    for index, char in enumerate(input_string):
+        if char in last_seen:
+            start_index = max(start_index, last_seen[char] + 1)
+
+        if current_longest_substring[1] - current_longest_substring[0] < (index + 1) - start_index:
+            current_longest_substring = (start_index, index + 1)
+
+        last_seen[char] = index
+
+    return input_string[current_longest_substring[0]: current_longest_substring[1]]
 
 
 def underscorify_substring(input_string, substring):
@@ -1045,8 +1057,8 @@ if __name__ == '__main__':
 
     print("Largest Rectangle Under Skyline: {}".format(largest_rectangle_under_skyline([2, 1, 5, 6, 2, 3])))
     print("Longest Substring Without Duplication: {}".format(longest_substring_without_duplication("clementisacap")))
-
-    underscorify_string = "testthis is a testtest to see if testestest works"
+    print("Longest Substring Without Duplication Iterative:  {}".format(longest_substring_without_duplication_iterative("clementisacap")))
+    underscorify_string = "testthis is a testtest totesttest see if testestest workstest"
     print("Underscorify SubString: {}".format(underscorify_substring(underscorify_string, "test")))
 
     print("Multi-String Search: {}".format(
