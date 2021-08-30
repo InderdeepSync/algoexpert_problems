@@ -733,7 +733,7 @@ def max_sum_subarray(matrix, size):
     return max_sum_submatrix
 
 
-def is_interleave(s1, s2, target_string):
+def is_interleave(s1, s2, target_string):  # Memory Inefficient
     possible_strings = map(lambda p: p["value"], _interleave(s1, s2))
     return target_string in possible_strings
 
@@ -753,6 +753,25 @@ def _interleave(s1, s2):
             possibilities.append({"value": temp2, "index": index})
 
     return possibilities
+
+
+def interweaving_strings(str1, str2, target):  # Accepted on Leetcode
+    cache = {}
+
+    def _interweaving_strings(i, j, k):
+        if k == len(target):
+            return True
+        if (i, j, k) in cache:
+            return cache[(i, j, k)]
+
+        are_interwoven1 = i < len(str1) and str1[i] == target[k] and _interweaving_strings(i + 1, j, k + 1)
+        are_interwoven2 = j < len(str2) and str2[j] == target[k] and _interweaving_strings(i, j + 1, k + 1)
+
+        answer = are_interwoven1 or are_interwoven2
+        cache[(i, j, k)] = answer
+        return answer
+
+    return len(target) == len(str1) + len(str2) and _interweaving_strings(0, 0, 0)
 
 
 def generate_parenthesis(num):
@@ -1020,6 +1039,7 @@ if __name__ == '__main__':
     print("Numbers in PI: {}".format(numbers_in_pi("3141592", 0, ["3141", "5", "31", "2", "4159", "9", "42"])))
     print("Maximum Sum SubArray: {}".format(max_sum_subarray(input_matrix, 3)))
     print("Is Interleaved String: {}".format(is_interleave("dbbca", "aabcc", "aadbbcbcac")))
+    print("Interweaving Strings: {}".format(interweaving_strings("aabcc", "dbbca", "aadbbcbcac")))
     print("Generate Valid Parenthesis Combinations: {}".format(generate_parenthesis(3)))
     print("Ambiguous Measurements: {}".format(ambiguous_measurements([[200, 210], [450, 465], [800, 850]], 2100, 2300)))
 
