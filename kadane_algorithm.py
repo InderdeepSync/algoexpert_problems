@@ -1,10 +1,5 @@
 
-def kadane_algorithm_alternative(arr):
-    """
-    Verified on LeetCode
-    :param arr:
-    :return:
-    """
+def kadane_algorithm_alternative(arr):  # Verified on LeetCode
     if not list(filter(lambda num: num >= 0, arr)):
         return max(arr)
 
@@ -23,16 +18,17 @@ def kadane_algorithm_alternative(arr):
     return max_sum
 
 
-def kadane_algorithm_original(arr):
-    pass # TODO: Implement it
+def kadane_algorithm_original(arr):  # Verified on Leetcode
+    max_sum_subarray_ending_at = arr[0]
+    max_so_far = arr[0]
 
+    for index in range(1, len(arr)):
+        max_sum_subarray_ending_at = max(arr[index], arr[index] + max_sum_subarray_ending_at)
+        max_so_far = max(max_so_far, max_sum_subarray_ending_at)
 
-
-
-
-
-
+    return max_so_far
 
 
 if __name__ == "__main__":
     print(kadane_algorithm_alternative([3, 500, -1, -9000, 1, 3, -2, 3, 4, 0, 7, 2, -9, 6, 3, 1, -5, -400, 1]))
+    print(kadane_algorithm_original([3, 500, -1, -9000, 1, 3, -2, 3, 4, 0, 7, 2, -9, 6, 3, 1, -5, -400, 1]))
