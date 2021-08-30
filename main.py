@@ -2,7 +2,8 @@
 
 import math
 import re
-from typing import List
+from typing import List, Set
+from functools import reduce
 
 from heap import Heap
 from suffix_tree import SuffixTree
@@ -678,7 +679,7 @@ def disk_stacking(disks):
             other_disk = disks[index2]
             if current_disk[0] >= other_disk[0] and current_disk[1] >= other_disk[1] and current_disk[2] >= other_disk[
                 2]:
-                heights[index1] = max(heights[index1], current_disk[2] + heights[index2])
+                heights[index1] = max(heights[index1], current_disk[2] + heights[index2])  # Mistake
                 sequences[index1] = index2
 
     result_arr = []
@@ -848,8 +849,23 @@ def longest_substring_without_duplication_iterative(input_string):  # Verified o
 
 
 def underscorify_substring(input_string, substring):
-    # TODO Similar Idea to merging overlapping Intervals
-    pass
+    start_indices = (m.start() for m in re.finditer('(?={})'.format(substring), input_string))
+    ranges = list(map(lambda start: [start, start + len(substring)], start_indices))
+    if not ranges:
+        return input_string
+
+    indices = reduce(lambda acc, cur: acc.union(cur), merge_overlapping_intervals(ranges), set())
+
+    output = []
+    for i in range(len(input_string)):
+        if i in indices:
+            output.append("_")
+        output.append(input_string[i])
+
+    if len(input_string) in indices:
+        output.append("_")
+
+    return "".join(output)
 
 
 def multi_string_search(input_string, words):

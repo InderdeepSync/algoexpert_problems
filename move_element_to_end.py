@@ -1,5 +1,5 @@
 
-def move_element_to_end(arr, target):
+def move_element_to_end(arr, target):  # Verified on Leetcode (My Solution)
     last_index = 0
 
     for i in range(len(arr)):
