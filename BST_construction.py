@@ -617,6 +617,19 @@ def flatten_tree(root):
     return result
 
 
+def number_of_binary_tree_topologies(num):
+    if num == 0:
+        return 1
+    number_of_topologies = 0
+    left_subtree_size = 0
+    while left_subtree_size <= num - 1:
+        left_subtree_topologies = number_of_binary_tree_topologies(left_subtree_size)
+        right_subtree_topologies = number_of_binary_tree_topologies(num - 1 - left_subtree_size)
+        number_of_topologies += left_subtree_topologies * right_subtree_topologies
+        left_subtree_size += 1
+
+    return number_of_topologies
+
 def main():
     tree = create_bst_tree1()
     tree2 = create_bst_tree2()
@@ -655,6 +668,7 @@ def main():
     print("Flatten Tree: {}".format(tree.flatten()))
     # print("Flatten Binary Tree Recursive: {}".format(flatten_tree(tree)))
     print("Depth: {}".format(tree.depth))
+    print("Number of Binary Tree Topologies: {}".format(number_of_binary_tree_topologies(3)))
 
 
 def create_bst_tree1():
