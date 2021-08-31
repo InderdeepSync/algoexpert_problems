@@ -514,7 +514,7 @@ def max_sum_increasing_subsequence(arr):
     return list(reversed(result))
 
 
-def longest_increasing_subsequence(arr):  # Time Complexity: O(n^2)
+def longest_increasing_subsequence(arr):  # Time Complexity: O(n^2) # Verified on Leetcode
     max_length_subsequence_including_current = [1] * len(arr)
     sequences = [None] * len(arr)
     for index1 in range(1, len(arr)):
@@ -536,14 +536,35 @@ def longest_increasing_subsequence(arr):  # Time Complexity: O(n^2)
     return result
 
 
-def longest_increasing_subsequence_optimal(arr):  # Time Complexity: O(nlog(n)) Utilizes binary search
-    # TODO Complete it
+def longest_increasing_subsequence_optimal(arr):  # Verified on Leetcode
+    def _binary_search(start_index, end_index, number):
+        if start_index > end_index:
+            return start_index
+
+        mid = (start_index + end_index)//2
+        if arr[indices[mid]] < number:
+            start_index = mid + 1
+        else:
+            end_index = mid - 1
+        return _binary_search(start_index, end_index, number)
+
     sequences = [None] * len(arr)
     indices = [None] * (len(arr) + 1)
     length = 0
 
-    for index, item in enumerate(arr):
-        pass
+    for index, num in enumerate(arr):
+        new_length = _binary_search(1, length, num)
+        sequences[index] = indices[new_length - 1]
+        indices[new_length] = index
+        length = max(length, new_length)
+
+    result = []
+    temp_index = indices[length]
+    while temp_index is not None:
+        result.insert(0, arr[temp_index])
+        temp_index = sequences[temp_index]
+
+    return result
 
 
 def lcs(input1, input2):  # Verified on Leetcode
