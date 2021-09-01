@@ -44,7 +44,7 @@ class SuffixTree:
             sub_tree = new_sub_tree
             temp_index += 1
 
-        sub_tree.children.append(SuffixTree._convert_string_to_tree(suffix[temp_index:]))
+        sub_tree.children.append(SuffixTree._convert_string_to_tree(suffix, temp_index))
 
 
     @staticmethod
@@ -52,10 +52,12 @@ class SuffixTree:
         return any(node.char == char for node in tree_node.children)
 
     @classmethod
-    def _convert_string_to_tree(cls, string):
-        if not string:
-            return SuffixTree("*", None)
-        return SuffixTree(string[0], [cls._convert_string_to_tree(string[1:])])
+    def _convert_string_to_tree(cls, string, start_index):
+        if start_index == len(string):
+            terminator_node = SuffixTree("*", None)
+            terminator_node.word_formed = string
+            return terminator_node
+        return SuffixTree(string[start_index], [cls._convert_string_to_tree(string, start_index + 1)])
 
     def get_child_with_char(self, char):
         temp = None
