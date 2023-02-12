@@ -3,11 +3,9 @@ def spiral_traverse(matrix):
     num_columns = len(matrix[0])
 
     res = []
-    while num_rows > 0 and num_columns > 0:
+    while not matrix:
         res.extend(perimeter_func(matrix))
         matrix = _get_inner_matrix(matrix)
-        num_rows -= 2
-        num_columns -= 2
 
     return res
 
@@ -82,5 +80,5 @@ if __name__ == "__main__":
                      [0],
                      [1],
                      [1]]
-    result = spiral_traversal_elegant(input_matrix3)
+    result = spiral_traversal_elegant(input_matrix)
     print(result)

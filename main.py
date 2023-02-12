@@ -3,7 +3,7 @@
 import math
 import re
 from typing import List, Set
-from functools import reduce
+from functools import reduce, lru_cache
 
 from heap import Heap
 from suffix_tree import SuffixTree
@@ -22,6 +22,7 @@ def evaluate(arr, depth=1):
     return total * depth
 
 
+@lru_cache
 def is_palindrome(string):
     for index in range(math.floor(len(string) / 2)):
         if string[index] != string[len(string) - 1 - index]:
