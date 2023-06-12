@@ -16,7 +16,7 @@ I had resolved to never look at the official solution beforehand as I wanted to 
 After all, that's the way it is in the real world🌎. I wanted to arrive at the solution organically🌱, and observe patterns I could potentially exploit. 
 
 I would stay up all night🌃 at times, iterating over my answers until my code submission achieved the desired time complexity⏰. 
-Even when it did satify the time requirements, I would try to further simplify the logic - strip it down to the barebones🦴, without any fluff.
+Even when it did satisfy the time requirements, I would try to further simplify the logic - strip it down to the barebones🦴, without any fluff.
 That's how I ensure I remember🧠 this stuff in the long run. Every now and then, I casually go through this code and try to recall the ideas I learnt while sipping a nice cup of coffee☕. 
 
 I failed several times. I had to take a quick peek🫣 at the final code quite a few times for inspiration. But only a glance.
