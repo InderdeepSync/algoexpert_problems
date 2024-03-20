@@ -1,95 +1,76 @@
-from suffix_tree import SuffixTree
+class SuffixTrie:
+    def __init__(self, words):
+        self.root = {}
+        self.endSymbol = "*"
+        self.populateSuffixTrieFrom(words)
+
+    def _addString(self, string):
+        i = 0
+        cur = self.root
+        while i < len(string):
+            if string[i] not in cur:
+                cur[string[i]] = {}
+
+            cur = cur[string[i]]
+            i += 1
+
+        cur["*"] = string
+
+    def populateSuffixTrieFrom(self, words):
+        for word in words:
+            self._addString(word)
+
+    def contains(self, string):
+        cur = self.root
+        i = 0
+        while True:
+            if i == len(string):
+                return "*" in cur
+            if string[i] not in cur:
+                return False
+
+            cur = cur[string[i]]
+            i += 1
 
 
-def boggle_board(board, words):
-    num_rows = len(board)
-    num_columns = len(board[0])
+def getNeighbors(i, j, board, visited):
+    result = [(i - 1, j - 1), (i + 1, j - 1), (i - 1, j + 1), (i + 1, j + 1), (i, j + 1), (i, j - 1), (i - 1, j),
+              (i + 1, j)]
+    condition = lambda c: 0 <= c[0] < len(board) and 0 <= c[1] < len(board[0]) and c not in visited
+    return list(filter(condition, result))
 
-    def get_allowed_neighbours(coords, visited):
-        def is_valid_cell(row_index, col_index):
-            return 0 <= row_index < num_rows and 0 <= col_index < num_columns and (row_index, col_index) not in visited
 
-        row_idx, col_idx = coords
-        if is_valid_cell(row_idx + 1, col_idx):
-            yield row_idx + 1, col_idx
-        if is_valid_cell(row_idx - 1, col_idx):
-            yield row_idx - 1, col_idx
-        if is_valid_cell(row_idx, col_idx + 1):
-            yield row_idx, col_idx + 1
-        if is_valid_cell(row_idx, col_idx - 1):
-            yield row_idx, col_idx - 1
-        if is_valid_cell(row_idx + 1, col_idx + 1):
-            yield row_idx + 1, col_idx + 1
-        if is_valid_cell(row_idx - 1, col_idx - 1):
-            yield row_idx - 1, col_idx - 1
-        if is_valid_cell(row_idx - 1, col_idx + 1):
-            yield row_idx - 1, col_idx + 1
-        if is_valid_cell(row_idx + 1, col_idx - 1):
-            yield row_idx + 1, col_idx - 1
-
-    def find_words_starting_at(x_coord, y_coord):
-        queue = [{"coordinate": (x_coord, y_coord), "visited_till_now": set(), "sub_tree": tree}]
-        while queue:
-            node = queue.pop(0)
-            row_index, col_index = node["coordinate"]
-            current_char = board[row_index][col_index]
-
-            sub_tree = node["sub_tree"].get_child_with_char(current_char)
-            if not sub_tree:
-                continue
-
-            for child_node in sub_tree.children:
-                if child_node.char == "*":
-                    words_found.add(child_node.word_formed)
-                    break
-
-            neighbours = get_allowed_neighbours(node["coordinate"], node["visited_till_now"])
-            for neighbour in neighbours:
-                temp = set(node["visited_till_now"])
-                temp.add(node["coordinate"])
-                queue.append({"coordinate": neighbour, "visited_till_now": temp, "sub_tree": sub_tree})
-
-    tree = SuffixTree(char="/", children=[])
-    for word in words:
-        tree.add_suffix_to_tree(word)
-
+def traverse(cur, i, j, board, visited):
     words_found = set()
-    for i in range(num_rows):
-        for j in range(num_columns):
-            find_words_starting_at(i, j)
+
+    if board[i][j] not in cur:
+        return words_found
+
+    if "*" in cur[board[i][j]]:
+        words_found.add(cur[board[i][j]]["*"])
+
+    visited.add((i, j))
+
+    for neighbor in getNeighbors(i, j, board, visited):
+        temp = traverse(cur[board[i][j]], *neighbor, board, visited=set(visited))
+        words_found = words_found.union(temp)
 
     return words_found
 
 
+def boggleBoard(board, words):  # Verified on Leetcode
+    result = set()
+    trie = SuffixTrie(words)
+    print(trie.root)
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            result = result.union(traverse(trie.root, i, j, board, visited=set()))
+
+    return result
+
 if __name__ == "__main__":
-    input_board = [["o", "a", "b", "n"],
-                   ["o", "t", "h", "e"],
-                   ["a", "m", "k", "r"],
-                   ["a", "f", "l", "v"]]
-    words_list = ["oa", "oat", "oath"]
-
-    input_board2 = [["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
-                    ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a"]]
-    words_list2 = ["a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa"]
-
-    input_board3 = [["t", "h", "i", "s", "i", "s", "a"],
-                    ["s", "i", "m", "p", "l", "e", "x"],
-                    ["b", "x", "x", "x", "x", "e", "b"],
-                    ["x", "o", "g", "g", "l", "x", "o"],
-                    ["x", "x", "x", "D", "T", "r", "a"],
-                    ["R", "E", "P", "E", "A", "d", "x"],
-                    ["x", "x", "x", "x", "x", "x", "x"],
-                    ["N", "O", "T", "R", "E", "-", "P"],
-                    ["x", "x", "D", "E", "T", "A", "E"], ]
-    words_list3 = ["this", "is", "not", "a", "simple", "boggle", "board", "test", "REPEATED", "NOTRE-PEATED"]
-    print("Boggle Board: {}".format(boggle_board(input_board3, words_list3)))
+    print(boggleBoard([
+  ["f", "s", "z"],
+  ["t", "e", "i"],
+  ["t", "w", "d"]
+], ["twisted"]))
