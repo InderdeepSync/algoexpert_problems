@@ -515,59 +515,6 @@ def max_sum_increasing_subsequence(arr):
     return list(reversed(result))
 
 
-def longest_increasing_subsequence(arr):  # Time Complexity: O(n^2) # Verified on Leetcode
-    max_length_subsequence_including_current = [1] * len(arr)
-    sequences = [None] * len(arr)
-    for index1 in range(1, len(arr)):
-        for index2 in range(0, index1):
-            if arr[index2] >= arr[index1]:
-                continue
-
-            prospective_length = max_length_subsequence_including_current[index2] + 1
-            if max_length_subsequence_including_current[index1] < prospective_length:
-                max_length_subsequence_including_current[index1] = prospective_length
-                sequences[index1] = index2
-
-    temp_index = max_length_subsequence_including_current.index(max(max_length_subsequence_including_current))
-    result = []
-    while temp_index is not None:
-        result.insert(0, arr[temp_index])
-        temp_index = sequences[temp_index]
-
-    return result
-
-
-def longest_increasing_subsequence_optimal(arr):  # Verified on Leetcode
-    def _binary_search(start_index, end_index, number):
-        if start_index > end_index:
-            return start_index
-
-        mid = (start_index + end_index)//2
-        if arr[indices[mid]] < number:
-            start_index = mid + 1
-        else:
-            end_index = mid - 1
-        return _binary_search(start_index, end_index, number)
-
-    sequences = [None] * len(arr)
-    indices = [None] * (len(arr) + 1)
-    length = 0
-
-    for index, num in enumerate(arr):
-        new_length = _binary_search(1, length, num)
-        sequences[index] = indices[new_length - 1]
-        indices[new_length] = index
-        length = max(length, new_length)
-
-    result = []
-    temp_index = indices[length]
-    while temp_index is not None:
-        result.insert(0, arr[temp_index])
-        temp_index = sequences[temp_index]
-
-    return result
-
-
 def lcs(input1, input2):  # Verified on Leetcode
     cache = dict()
 
@@ -1108,10 +1055,6 @@ if __name__ == '__main__':
         apartment_hunting([["SC"], ["G"], ["G", "SC"], ["SC"], ["SC", "ST"]], ["G", "SC", "ST"])))
     print("Right Smaller Than: {}".format(right_smaller_than([8, 5, 11, -1, 3, 4, 2])))
 
-    print("Longest Increasing Subsequence: {}".format(
-        longest_increasing_subsequence([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
-    print("Longest Increasing Subsequence Optimal: {}".format(
-        longest_increasing_subsequence_optimal([5, 7, -24, 12, 10, 2, 3, 12, 5, 6, 35])))
     print("Sorted Squared Array: {}".format(sorted_squared_array([-9, -6, -1, 0, 2, 4, 12])))
     print("Sort k-sorted Array: {}".format(sort_k_sorted_array([3, 2, 1, 5, 4, 7, 6, 5], k=3)))
     print("Subarray Sort: {}".format(subarray_sort([1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19])))
