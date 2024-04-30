@@ -1,3 +1,4 @@
+
 def isValid(string):
     if not string:
         return False
@@ -30,5 +31,9 @@ def inner(string, dotCount):
     return result
 
 
-def validIPAddresses(string):
+def validIPAddresses(string): # Verified on AlgoExpert
     return inner(string, 3)
+
+
+if __name__ == "__main__":
+    print(validIPAddresses("1921680"))
