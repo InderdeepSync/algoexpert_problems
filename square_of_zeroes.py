@@ -24,10 +24,45 @@ def square_of_zeroes(matrix):
     return None
 
 
+def squareOfZeroes(matrix): # Verified on AlgoExpert
+    zerosCount = [[[1, 1] if matrix[i][j] == 0 else [0, 0] for j in range(len(matrix[0]))] for i in range(len(matrix))]
+
+    for i in range(len(matrix) - 2, -1, -1):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] == 1:
+                continue
+            zerosCount[i][j][0] += zerosCount[i + 1][j][0]
+
+    for j in range(len(matrix[0]) - 2, -1, -1):
+        for i in range(len(matrix)):
+            if matrix[i][j] == 1:
+                continue
+            zerosCount[i][j][1] += zerosCount[i][j + 1][1]
+
+    for k in range(2, len(matrix) + 1):
+        for i in range(0, len(matrix) - (k - 1)):
+            for j in range(0, len(matrix) - (k - 1)):
+                num1, num2 = zerosCount[i][j]
+                _, num3 = zerosCount[i + (k - 1)][j]
+                num4, _ = zerosCount[i][j + (k - 1)]
+                if num1 >= k and num2 >= k and num3 >= k and num4 >= k:
+                    return True
+
+    print(zerosCount)
+    return False
+
+
 if __name__ == "__main__":
     input_matrix = [[1, 1, 0, 1, 0],
                     [1, 1, 0, 1, 0],
                     [0, 0, 0, 0, 0],
                     [1, 1, 0, 1, 0],
                     [1, 0, 0, 0, 0]]
-    pp("Square of Zeroes: {}".format(square_of_zeroes(input_matrix)))
+    input_matrix2 = [
+        [0, 0, 0, 1],
+        [0, 1, 1, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 1]
+      ]
+    # pp("Square of Zeroes: {}".format(square_of_zeroes(input_matrix)))
+    print(squareOfZeroes(input_matrix2))
