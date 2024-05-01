@@ -1,19 +1,26 @@
+from typing import List
 
 
-def longest_balanced_substring(string):  # TODO Refer to Alternate optimal approach too
-    stack = [-1]
-    max_length = 0
+def longestBalancedSubstring(string): # My Solution Verified on AlgoExpert
+    stack: List = []
+    lbsLength = 0
+    prevCarry = 0
     for index, char in enumerate(string):
         if char == "(":
-            stack.append(index)
+            stack.append((index, prevCarry))
+            prevCarry = 0
         else:
-            stack.pop()
-            if not stack:
-                stack.append(index)
-            else:
-                max_length = max(max_length, index - stack[-1])
-    return max_length
+            prevCarry = 0
+            if len(stack) == 0:
+                continue
+
+            idx, carry = stack.pop()
+            strLen = index - idx + 1 + carry
+            lbsLength = max(lbsLength, strLen)
+            prevCarry = strLen
+
+    return lbsLength
 
 
 if __name__ == "__main__":
-    print("Longest Balanced Substring: {}".format(longest_balanced_substring("(()))(")))
+    print("Longest Balanced Substring: {}".format(longestBalancedSubstring("(()))(")))
