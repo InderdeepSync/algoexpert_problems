@@ -63,27 +63,6 @@ def index_equals_value(sorted_input, start, end):
     return min_index
 
 
-def search_for_range(arr, target, start, end):  # Verified on Leetcode
-    if start > end:
-        return [-1, -1]
-
-    mid = math.floor((start + end) / 2)
-    if arr[mid] == target:
-        temp = mid - 1
-        while temp >= 0 and arr[temp] == target:
-            temp -= 1
-
-        temp2 = mid + 1
-        while temp2 <= len(arr) - 1 and arr[temp2] == target:
-            temp2 += 1
-
-        return [temp + 1, temp2 - 1]
-    elif arr[mid] > target:
-        return search_for_range(arr, target, start, mid - 1)
-    else:
-        return search_for_range(arr, target, mid + 1, end)
-
-
 if __name__ == '__main__':
     array = [12, 45, 65, 78, 83, 87, 91, 95, 99, 101]
     result = binary_search(array, 86, 0, len(array) - 1)
@@ -98,4 +77,3 @@ if __name__ == '__main__':
 
     print("Shifted Binary Search: {}".format(shifted_binary_search([3, 1], start=0, end=1, target=1)))
     print("Index Equals Value: {}".format(index_equals_value([-5, -3, 2, 3, 4, 5, 9], start=0, end=6)))
-    print("Search For Range: {}".format(search_for_range([5, 7, 7, 8, 8, 10], 8, start=0, end=5)))
